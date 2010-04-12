@@ -1,0 +1,1 @@
+declare -x LD_PRELOAD="/tmp/proload/libkow.so"

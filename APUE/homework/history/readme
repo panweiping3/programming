@@ -1,0 +1,7 @@
+execXX都是通过execve系统调用实现的（例如 strace ls）
+故利用preload技术劫持execve系统调用，将第一个参数filename记录下来即可。
+
+测试方法：
+1、export LD_PRELOAD="./logger.so"
+2、./main
+3、cat /tmp/program.log

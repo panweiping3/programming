@@ -1,0 +1,6 @@
+/bin/sh
+/bin/bash
+/sbin/nologin
+/bin/ksh
+/bin/tcsh
+/bin/csh
