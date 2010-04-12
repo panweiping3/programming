@@ -1,0 +1,96 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.6	//
+AR	Makefile	/^AR            = ar cqs$/;"	m
+CC	Makefile	/^CC            = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS        = -pipe -O2 -g -march=i386 -mcpu=i686 -Wall -W -D_REENTRANT $(DEFINES)$/;"	m
+CHK_DIR_EXISTS	Makefile	/^CHK_DIR_EXISTS= test -d$/;"	m
+COMPRESS	Makefile	/^COMPRESS      = gzip -9f$/;"	m
+COPY	Makefile	/^COPY          = cp -f$/;"	m
+COPY_DIR	Makefile	/^COPY_DIR      = $(COPY) -r$/;"	m
+COPY_FILE	Makefile	/^COPY_FILE     = $(COPY)$/;"	m
+CXX	Makefile	/^CXX           = g++$/;"	m
+CXXFLAGS	Makefile	/^CXXFLAGS      = -pipe -O2 -g -march=i386 -mcpu=i686 -Wall -W -D_REENTRANT $(DEFINES)$/;"	m
+DEFINES	Makefile	/^DEFINES       = -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB$/;"	m
+DEL_DIR	Makefile	/^DEL_DIR       = rmdir$/;"	m
+DEL_FILE	Makefile	/^DEL_FILE      = rm -f$/;"	m
+DESTDIR	Makefile	/^DESTDIR       = $/;"	m
+DIST	Makefile	/^DIST          = \/usr\/share\/qt4\/mkspecs\/common\/g++-multilib.conf \\$/;"	m
+EDGE_H	edge.h	2;"	d
+Edge	edge.cpp	/^Edge::Edge(Node *sourceNode, Node *destNode)$/;"	f	class:Edge
+Edge	edge.h	/^class Edge : public QGraphicsItem$/;"	c
+GRAPHWIDGET_H	graphwidget.h	2;"	d
+GraphWidget	graphwidget.cpp	/^GraphWidget::GraphWidget()$/;"	f	class:GraphWidget
+GraphWidget	graphwidget.h	/^class GraphWidget : public QGraphicsView$/;"	c
+INCPATH	Makefile	/^INCPATH       = -I\/usr\/lib\/qt4\/mkspecs\/linux-g++ -I. -I\/usr\/include\/QtCore -I\/usr\/include\/QtCore -I\/usr\/include\/QtGui -I\/usr\/include\/QtGui -I\/usr\/include -I. -I. -I.$/;"	m
+INSTALL_DIR	Makefile	/^INSTALL_DIR   = $(COPY_DIR)$/;"	m
+INSTALL_FILE	Makefile	/^INSTALL_FILE  = install -m 644 -p$/;"	m
+INSTALL_PROGRAM	Makefile	/^INSTALL_PROGRAM = install -m 755 -p$/;"	m
+LFLAGS	Makefile	/^LFLAGS        = $/;"	m
+LIBS	Makefile	/^LIBS          = $(SUBLIBS)   -lQtGui -lQtCore -lpthread$/;"	m
+LINK	Makefile	/^LINK          = g++$/;"	m
+MKDIR	Makefile	/^MKDIR         = mkdir -p$/;"	m
+MOVE	Makefile	/^MOVE          = mv -f$/;"	m
+NODE_H	node.h	2;"	d
+Node	node.cpp	/^Node::Node(GraphWidget *graphWidget)$/;"	f	class:Node
+Node	node.h	/^class Node : public QGraphicsItem$/;"	c
+OBJECTS	Makefile	/^OBJECTS       = edge.o \\$/;"	m
+OBJECTS_DIR	Makefile	/^OBJECTS_DIR   = .\/$/;"	m
+Pi	edge.cpp	/^static const double Pi = 3.14159265358979323846264338327950288419717;$/;"	v	file:
+QMAKE	Makefile	/^QMAKE         = \/usr\/lib\/qt4\/bin\/qmake-qt4$/;"	m
+QMAKE_TARGET	Makefile	/^QMAKE_TARGET  = elasticnode$/;"	m
+RANLIB	Makefile	/^RANLIB        = $/;"	m
+SED	Makefile	/^SED           = sed$/;"	m
+SOURCES	Makefile	/^SOURCES       = edge.cpp \\$/;"	m
+SYMLINK	Makefile	/^SYMLINK       = ln -sf$/;"	m
+TAR	Makefile	/^TAR           = tar -cf$/;"	m
+TARGET	Makefile	/^TARGET        = elasticnode$/;"	m
+TwoPi	edge.cpp	/^static const double TwoPi = 2.0 * Pi;$/;"	v	file:
+Type	edge.h	/^		enum { Type= UserType + 2};$/;"	e	enum:Edge::__anon1
+Type	node.h	/^			Type = UserType + 1$/;"	e	enum:Node::__anon2
+addEdge	node.cpp	/^void Node::addEdge(Edge *edge)$/;"	f	class:Node
+adjust	edge.cpp	/^void Edge::adjust()$/;"	f	class:Edge
+advance	node.cpp	/^bool Node::advance()$/;"	f	class:Node
+arrowSize	edge.h	/^		qreal arrowSize;$/;"	m	class:Edge
+boundingRect	edge.cpp	/^QRectF Edge::boundingRect() const$/;"	f	class:Edge
+boundingRect	node.cpp	/^QRectF Node::boundingRect() const$/;"	f	class:Node
+calculateForces	node.cpp	/^void Node::calculateForces()$/;"	f	class:Node
+centerNode	graphwidget.h	/^		Node *centerNode;$/;"	m	class:GraphWidget
+dest	edge.h	/^		Node *source, *dest;$/;"	m	class:Edge
+destNode	edge.cpp	/^Node *Edge::destNode() const$/;"	f	class:Edge
+destPoint	edge.h	/^		QPointF destPoint;$/;"	m	class:Edge
+drawBackground	graphwidget.cpp	/^void GraphWidget::drawBackground(QPainter *painter, const QRectF &rect)$/;"	f	class:GraphWidget
+edgeList	node.h	/^		QList <Edge *> edgeList;$/;"	m	class:Node
+edges	node.cpp	/^QList<Edge *> Node::edges() const$/;"	f	class:Node
+graph	node.h	/^		GraphWidget *graph;$/;"	m	class:Node
+itemChange	node.cpp	/^QVariant Node::itemChange(GraphicsItemChange change, const QVariant &value)$/;"	f	class:Node
+itemMoved	graphwidget.cpp	/^void GraphWidget::itemMoved()$/;"	f	class:GraphWidget
+keyPressEvent	graphwidget.cpp	/^void GraphWidget::keyPressEvent(QKeyEvent *event)$/;"	f	class:GraphWidget
+main	main.cpp	/^int main(int argc, char *argv[])$/;"	f
+metaObject	moc_graphwidget.cpp	/^const QMetaObject *GraphWidget::metaObject() const$/;"	f	class:GraphWidget
+mousePressEvent	node.cpp	/^void Node::mousePressEvent(QGraphicsSceneMouseEvent *event)	$/;"	f	class:Node
+mouseReleaseEvent	node.cpp	/^void Node::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)$/;"	f	class:Node
+newPos	node.h	/^		QPointF newPos;$/;"	m	class:Node
+paint	edge.cpp	/^void Edge::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)$/;"	f	class:Edge
+paint	node.cpp	/^void Node::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)	$/;"	f	class:Node
+qt_meta_data_GraphWidget	moc_graphwidget.cpp	/^static const uint qt_meta_data_GraphWidget[] = {$/;"	v	file:
+qt_meta_stringdata_GraphWidget	moc_graphwidget.cpp	/^static const char qt_meta_stringdata_GraphWidget[] = {$/;"	v	file:
+qt_metacall	moc_graphwidget.cpp	/^int GraphWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)$/;"	f	class:GraphWidget
+qt_metacast	moc_graphwidget.cpp	/^void *GraphWidget::qt_metacast(const char *_clname)$/;"	f	class:GraphWidget
+scaleView	graphwidget.cpp	/^void GraphWidget::scaleView(qreal scaleFactor)$/;"	f	class:GraphWidget
+setDestNode	edge.cpp	/^void Edge::setDestNode(Node *node)$/;"	f	class:Edge
+setSourceNode	edge.cpp	/^void Edge::setSourceNode(Node *node)$/;"	f	class:Edge
+shape	node.cpp	/^QPainterPath Node::shape() const$/;"	f	class:Node
+source	edge.h	/^		Node *source, *dest;$/;"	m	class:Edge
+sourceNode	edge.cpp	/^Node *Edge::sourceNode() const$/;"	f	class:Edge
+sourcePoint	edge.h	/^		QPointF sourcePoint;$/;"	m	class:Edge
+staticMetaObject	moc_graphwidget.cpp	/^const QMetaObject GraphWidget::staticMetaObject = {$/;"	m	class:GraphWidget	file:
+timerEvent	graphwidget.cpp	/^void GraphWidget::timerEvent(QTimerEvent *event)$/;"	f	class:GraphWidget
+timerId	graphwidget.h	/^		int timerId;$/;"	m	class:GraphWidget
+type	edge.h	/^		int type() const { return Type; }$/;"	f	class:Edge
+type	node.h	/^		int type() const $/;"	f	class:Node
+wheelEvent	graphwidget.cpp	/^void GraphWidget::wheelEvent(QWheelEvent *event)$/;"	f	class:GraphWidget
+~Edge	edge.cpp	/^Edge::~Edge()$/;"	f	class:Edge

@@ -1,0 +1,10 @@
+<!DOCTYPE node PUBLIC "-//freedesktop//DTD D-BUS Object Introspection 1.0//EN" "http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+<node name="/com/redflag/car">
+    <interface name="com.redflag.carInterface">
+        <method name="accelerate">
+        <method name="dccelerate">
+        <method name="turnLeft">
+        <method name="turnRight">
+        <signal name="crashed">
+    </interface>
+</node>

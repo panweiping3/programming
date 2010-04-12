@@ -1,0 +1,52 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.6	//
+AR	Makefile	/^AR            = ar cqs$/;"	m
+CC	Makefile	/^CC            = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS        = -pipe -O2 -g -march=i386 -mcpu=i686 -Wall -W -D_REENTRANT $(DEFINES)$/;"	m
+CHK_DIR_EXISTS	Makefile	/^CHK_DIR_EXISTS= test -d$/;"	m
+COMPRESS	Makefile	/^COMPRESS      = gzip -9f$/;"	m
+COPY	Makefile	/^COPY          = cp -f$/;"	m
+COPY_DIR	Makefile	/^COPY_DIR      = $(COPY) -r$/;"	m
+COPY_FILE	Makefile	/^COPY_FILE     = $(COPY)$/;"	m
+CXX	Makefile	/^CXX           = g++$/;"	m
+CXXFLAGS	Makefile	/^CXXFLAGS      = -pipe -O2 -g -march=i386 -mcpu=i686 -Wall -W -D_REENTRANT $(DEFINES)$/;"	m
+DEFINES	Makefile	/^DEFINES       = -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB$/;"	m
+DEL_DIR	Makefile	/^DEL_DIR       = rmdir$/;"	m
+DEL_FILE	Makefile	/^DEL_FILE      = rm -f$/;"	m
+DESTDIR	Makefile	/^DESTDIR       = $/;"	m
+DIST	Makefile	/^DIST          = \/usr\/share\/qt4\/mkspecs\/common\/g++-multilib.conf \\$/;"	m
+FINDDIALOG_H	finddialog.h	2;"	d
+FindDialog	finddialog.cpp	/^FindDialog::FindDialog(QWidget *parent):QDialog(parent)$/;"	f	class:FindDialog
+FindDialog	finddialog.h	/^class FindDialog : public QDialog$/;"	c
+INCPATH	Makefile	/^INCPATH       = -I\/usr\/lib\/qt4\/mkspecs\/linux-g++ -I. -I\/usr\/include\/QtCore -I\/usr\/include\/QtCore -I\/usr\/include\/QtGui -I\/usr\/include\/QtGui -I\/usr\/include -I. -I. -I.$/;"	m
+INSTALL_DIR	Makefile	/^INSTALL_DIR   = $(COPY_DIR)$/;"	m
+INSTALL_FILE	Makefile	/^INSTALL_FILE  = install -m 644 -p$/;"	m
+INSTALL_PROGRAM	Makefile	/^INSTALL_PROGRAM = install -m 755 -p$/;"	m
+LFLAGS	Makefile	/^LFLAGS        = $/;"	m
+LIBS	Makefile	/^LIBS          = $(SUBLIBS)   -lQtGui -lQtCore -lpthread$/;"	m
+LINK	Makefile	/^LINK          = g++$/;"	m
+MKDIR	Makefile	/^MKDIR         = mkdir -p$/;"	m
+MOVE	Makefile	/^MOVE          = mv -f$/;"	m
+OBJECTS	Makefile	/^OBJECTS       = finddialog.o \\$/;"	m
+OBJECTS_DIR	Makefile	/^OBJECTS_DIR   = .\/$/;"	m
+QMAKE	Makefile	/^QMAKE         = \/usr\/lib\/qt-3.3\/bin\/qmake$/;"	m
+QMAKE_TARGET	Makefile	/^QMAKE_TARGET  = dialog$/;"	m
+RANLIB	Makefile	/^RANLIB        = $/;"	m
+SED	Makefile	/^SED           = sed$/;"	m
+SOURCES	Makefile	/^SOURCES       = finddialog.cpp \\$/;"	m
+SYMLINK	Makefile	/^SYMLINK       = ln -sf$/;"	m
+TAR	Makefile	/^TAR           = tar -cf$/;"	m
+TARGET	Makefile	/^TARGET        = dialog$/;"	m
+backwardCheckBox	finddialog.h	/^		QCheckBox *backwardCheckBox;$/;"	m	class:FindDialog
+caseCheckBox	finddialog.h	/^		QCheckBox *caseCheckBox;$/;"	m	class:FindDialog
+closeButton	finddialog.h	/^		QPushButton *closeButton;$/;"	m	class:FindDialog
+enableFindButton	finddialog.cpp	/^void FindDialog::enableFindButton(const QString &text)$/;"	f	class:FindDialog
+findButton	finddialog.h	/^		QPushButton *findButton;$/;"	m	class:FindDialog
+findClicked	finddialog.cpp	/^void FindDialog::findClicked()$/;"	f	class:FindDialog
+label	finddialog.h	/^		QLabel *label;$/;"	m	class:FindDialog
+lineEdit	finddialog.h	/^		QLineEdit *lineEdit;$/;"	m	class:FindDialog
+main	main.cpp	/^int main(int argc, char *argv[])$/;"	f

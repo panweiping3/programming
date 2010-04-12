@@ -1,0 +1,69 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.7	//
+AR	Makefile	/^AR            = ar cqs$/;"	m
+CC	Makefile	/^CC            = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS        = -pipe -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i386 -mtune=generic -fasynchronous-unwind-tables -Wall -W -D_REENTRANT $(DEFINES)$/;"	m
+CHAT_ADAPTOR_H_1251923881	chat_adaptor.h	13;"	d
+CHAT_H	chat.h	2;"	d
+CHAT_INTERFACE_H_1251923901	chat_interface.h	12;"	d
+CHK_DIR_EXISTS	Makefile	/^CHK_DIR_EXISTS= test -d$/;"	m
+COMPRESS	Makefile	/^COMPRESS      = gzip -9f$/;"	m
+COPY	Makefile	/^COPY          = cp -f$/;"	m
+COPY_DIR	Makefile	/^COPY_DIR      = $(COPY) -r$/;"	m
+COPY_FILE	Makefile	/^COPY_FILE     = $(COPY)$/;"	m
+CXX	Makefile	/^CXX           = g++$/;"	m
+CXXFLAGS	Makefile	/^CXXFLAGS      = -pipe -O2 -g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fstack-protector --param=ssp-buffer-size=4 -m32 -march=i386 -mtune=generic -fasynchronous-unwind-tables -Wall -W -D_REENTRANT $(DEFINES)$/;"	m
+ChatAdaptor	chat_adaptor.cpp	/^ChatAdaptor::ChatAdaptor(QObject *parent)$/;"	f	class:ChatAdaptor
+ChatAdaptor	chat_adaptor.h	/^class ChatAdaptor: public QDBusAbstractAdaptor$/;"	c
+ChatMainWindow	chat.cpp	/^ChatMainWindow::ChatMainWindow()$/;"	f	class:ChatMainWindow
+ChatMainWindow	chat.h	/^class ChatMainWindow : public QMainWindow, Ui::ChatMainWindow$/;"	c
+ComTrolltechChatInterface	chat_interface.cpp	/^ComTrolltechChatInterface::ComTrolltechChatInterface(const QString &service, const QString &path, const QDBusConnection &connection, QObject *parent)$/;"	f	class:ComTrolltechChatInterface
+ComTrolltechChatInterface	chat_interface.h	/^class ComTrolltechChatInterface: public QDBusAbstractInterface$/;"	c
+DEFINES	Makefile	/^DEFINES       = -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB$/;"	m
+DEL_DIR	Makefile	/^DEL_DIR       = rmdir$/;"	m
+DEL_FILE	Makefile	/^DEL_FILE      = rm -f$/;"	m
+DESTDIR	Makefile	/^DESTDIR       = $/;"	m
+DIST	Makefile	/^DIST          = \/usr\/lib\/qt4\/mkspecs\/common\/g++-multilib.conf \\$/;"	m
+INCPATH	Makefile	/^INCPATH       = -I\/usr\/lib\/qt4\/mkspecs\/linux-g++ -I. -I\/usr\/include\/QtCore -I\/usr\/include\/QtGui -I\/usr\/include -I\/usr\/include\/QtDBus -I. -I. -I.$/;"	m
+INSTALL_DIR	Makefile	/^INSTALL_DIR   = $(COPY_DIR)$/;"	m
+INSTALL_FILE	Makefile	/^INSTALL_FILE  = install -m 644 -p$/;"	m
+INSTALL_PROGRAM	Makefile	/^INSTALL_PROGRAM = install -m 755 -p$/;"	m
+LFLAGS	Makefile	/^LFLAGS        = -Wl,-O1$/;"	m
+LIBS	Makefile	/^LIBS          = $(SUBLIBS)   -lQtDBus -lQtGui -lQtCore -lpthread$/;"	m
+LINK	Makefile	/^LINK          = g++$/;"	m
+MKDIR	Makefile	/^MKDIR         = mkdir -p$/;"	m
+MOVE	Makefile	/^MOVE          = mv -f$/;"	m
+NicknameDialog	chat.cpp	/^NicknameDialog::NicknameDialog(QWidget *parent)$/;"	f	class:NicknameDialog
+NicknameDialog	chat.h	/^class NicknameDialog : public QDialog, public Ui::NicknameDialog$/;"	c
+OBJECTS	Makefile	/^OBJECTS       = chat.o \\$/;"	m
+OBJECTS_DIR	Makefile	/^OBJECTS_DIR   = .\/$/;"	m
+QMAKE	Makefile	/^QMAKE         = \/usr\/lib\/qt4\/bin\/qmake-qt4$/;"	m
+QMAKE_TARGET	Makefile	/^QMAKE_TARGET  = dbus-chat$/;"	m
+RANLIB	Makefile	/^RANLIB        = $/;"	m
+SED	Makefile	/^SED           = sed$/;"	m
+SOURCES	Makefile	/^SOURCES       = chat.cpp \\$/;"	m
+SYMLINK	Makefile	/^SYMLINK       = ln -sf$/;"	m
+TAR	Makefile	/^TAR           = tar -cf$/;"	m
+TARGET	Makefile	/^TARGET        = dbus-chat$/;"	m
+aboutQt	chat.cpp	/^void ChatMainWindow::aboutQt()$/;"	f	class:ChatMainWindow
+actionSlot	chat.cpp	/^void ChatMainWindow::actionSlot(const QString &nickname, const QString &text)$/;"	f	class:ChatMainWindow
+changeNickname	chat.cpp	/^void ChatMainWindow::changeNickname()$/;"	f	class:ChatMainWindow
+chat	chat_interface.h	/^    typedef ::ComTrolltechChatInterface chat;$/;"	t	namespace:com::trolltech
+com	chat_interface.h	/^namespace com {$/;"	n
+exiting	chat.cpp	/^void ChatMainWindow::exiting()$/;"	f	class:ChatMainWindow
+m_messages	chat.h	/^        QStringList m_messages;$/;"	m	class:ChatMainWindow
+m_nickname	chat.h	/^        QString m_nickname;$/;"	m	class:ChatMainWindow
+main	chat.cpp	/^int main(int argc, char *argv[])$/;"	f
+messageSlot	chat.cpp	/^void ChatMainWindow::messageSlot(const QString &nickname, const QString &text)$/;"	f	class:ChatMainWindow
+rebuildHistory	chat.cpp	/^void ChatMainWindow::rebuildHistory()$/;"	f	class:ChatMainWindow
+sendClickedSlot	chat.cpp	/^void ChatMainWindow::sendClickedSlot()$/;"	f	class:ChatMainWindow
+staticInterfaceName	chat_interface.h	/^    static inline const char *staticInterfaceName()$/;"	f	class:ComTrolltechChatInterface
+textChangedSlot	chat.cpp	/^void ChatMainWindow::textChangedSlot(const QString &newText)$/;"	f	class:ChatMainWindow
+trolltech	chat_interface.h	/^  namespace trolltech {$/;"	n	namespace:com
+~ChatAdaptor	chat_adaptor.cpp	/^ChatAdaptor::~ChatAdaptor()$/;"	f	class:ChatAdaptor
+~ChatMainWindow	chat.cpp	/^ChatMainWindow::~ChatMainWindow()$/;"	f	class:ChatMainWindow
+~ComTrolltechChatInterface	chat_interface.cpp	/^ComTrolltechChatInterface::~ComTrolltechChatInterface()$/;"	f	class:ComTrolltechChatInterface

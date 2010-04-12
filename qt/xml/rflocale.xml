@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rflocale>
+  <lang>
+    <locale>en</locale>
+    <name>English</name>
+    <enabled>true</enabled>
+    <keyboardmod>pc104</keyboardmod>
+    <keyboardlay>us</keyboardlay>
+    <tzone>America/Scoresbysund</tzone>
+    <default/>
+  </lang>
+  <lang>
+    <locale>es</locale>
+    <name>Españoal</name>
+    <enabled>true</enabled>
+    <keyboardmod>pc104</keyboardmod>
+    <keyboardlay>us</keyboardlay>
+    <tzone>Asia/Shanghai</tzone>
+  </lang>
+  <lang>
+    <locale>pt</locale>
+    <name>Português</name>
+    <enabled>true</enabled>
+    <keyboardmod>pc104</keyboardmod>
+    <keyboardlay>us</keyboardlay>
+    <tzone>Asia/Shanghai</tzone>
+  </lang>
+  <lang>
+    <locale>zh_CN</locale>
+    <name>简体中文</name>
+    <enabled>true</enabled>
+    <keyboardmod>pc104</keyboardmod>
+    <keyboardlay>us</keyboardlay>
+    <tzone>Asia/Shanghai</tzone>
+  </lang>
+  <lang>
+    <locale>zh_TW</locale>
+    <name>繁体中文</name>
+    <enabled>true</enabled>
+    <keyboardmod>pc104</keyboardmod>
+    <keyboardlay>us</keyboardlay>
+    <tzone>Asia/Shanghai</tzone>
+  </lang>
+</rflocale>

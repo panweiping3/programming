@@ -1,0 +1,69 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.6	//
+AR	Makefile	/^AR            = ar cqs$/;"	m
+CC	Makefile	/^CC            = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS        = -pipe -O2 -g -march=i386 -mcpu=i686 -Wall -W -D_REENTRANT $(DEFINES)$/;"	m
+CHK_DIR_EXISTS	Makefile	/^CHK_DIR_EXISTS= test -d$/;"	m
+COMPRESS	Makefile	/^COMPRESS      = gzip -9f$/;"	m
+COPY	Makefile	/^COPY          = cp -f$/;"	m
+COPY_DIR	Makefile	/^COPY_DIR      = $(COPY) -r$/;"	m
+COPY_FILE	Makefile	/^COPY_FILE     = $(COPY)$/;"	m
+CXX	Makefile	/^CXX           = g++$/;"	m
+CXXFLAGS	Makefile	/^CXXFLAGS      = -pipe -O2 -g -march=i386 -mcpu=i686 -Wall -W -D_REENTRANT $(DEFINES)$/;"	m
+DEFINES	Makefile	/^DEFINES       = -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_GUI_LIB -DQT_CORE_LIB$/;"	m
+DEL_DIR	Makefile	/^DEL_DIR       = rmdir$/;"	m
+DEL_FILE	Makefile	/^DEL_FILE      = rm -f$/;"	m
+DESTDIR	Makefile	/^DESTDIR       = $/;"	m
+DIST	Makefile	/^DIST          = \/usr\/share\/qt4\/mkspecs\/common\/g++-multilib.conf \\$/;"	m
+GLWIDGET_H	glwidget.h	2;"	d
+GLWidget	glwidget.cpp	/^GLWidget::GLWidget(Helper *helper, QWidget *parent): QGLWidget(QGLFormat(QGL::SampleBuffers), parent), helper(helper)$/;"	f	class:GLWidget
+GLWidget	glwidget.h	/^class GLWidget : public QGLWidget$/;"	c
+HELPER_H	helper.h	2;"	d
+Helper	helper.cpp	/^Helper::Helper()$/;"	f	class:Helper
+Helper	helper.h	/^class Helper$/;"	c
+INCPATH	Makefile	/^INCPATH       = -I\/usr\/lib\/qt4\/mkspecs\/linux-g++ -I. -I\/usr\/include\/QtCore -I\/usr\/include\/QtCore -I\/usr\/include\/QtGui -I\/usr\/include\/QtGui -I\/usr\/include\/QtOpenGL -I\/usr\/include\/QtOpenGL -I\/usr\/include -I. -I\/usr\/X11R6\/include -I. -I.$/;"	m
+INSTALL_DIR	Makefile	/^INSTALL_DIR   = $(COPY_DIR)$/;"	m
+INSTALL_FILE	Makefile	/^INSTALL_FILE  = install -m 644 -p$/;"	m
+INSTALL_PROGRAM	Makefile	/^INSTALL_PROGRAM = install -m 755 -p$/;"	m
+LFLAGS	Makefile	/^LFLAGS        = $/;"	m
+LIBS	Makefile	/^LIBS          = $(SUBLIBS)  -L\/usr\/X11R6\/lib -lQtOpenGL -lQtGui -lQtCore -lGLU -lGL -lpthread$/;"	m
+LINK	Makefile	/^LINK          = g++$/;"	m
+MKDIR	Makefile	/^MKDIR         = mkdir -p$/;"	m
+MOVE	Makefile	/^MOVE          = mv -f$/;"	m
+OBJECTS	Makefile	/^OBJECTS       = glwidget.o \\$/;"	m
+OBJECTS_DIR	Makefile	/^OBJECTS_DIR   = .\/$/;"	m
+QMAKE	Makefile	/^QMAKE         = \/usr\/lib\/qt4\/bin\/qmake-qt4$/;"	m
+QMAKE_TARGET	Makefile	/^QMAKE_TARGET  = 2dopengl$/;"	m
+Q_OBJECT	window.h	/^	Q_OBJECT;$/;"	m	class:Window
+RANLIB	Makefile	/^RANLIB        = $/;"	m
+SED	Makefile	/^SED           = sed$/;"	m
+SOURCES	Makefile	/^SOURCES       = glwidget.cpp \\$/;"	m
+SYMLINK	Makefile	/^SYMLINK       = ln -sf$/;"	m
+TAR	Makefile	/^TAR           = tar -cf$/;"	m
+TARGET	Makefile	/^TARGET        = 2dopengl$/;"	m
+WIDGET_H	widget.h	2;"	d
+WINDOW_H	window.h	2;"	d
+Widget	widget.cpp	/^Widget::Widget(Helper *helper, QWidget *parent): QWidget(parent), helper(helper)$/;"	f	class:Widget
+Widget	widget.h	/^class Widget : public QWidget$/;"	c
+Window	window.cpp	/^Window::Window()$/;"	f	class:Window
+Window	window.h	/^class Window : public QWidget$/;"	c
+animate	glwidget.cpp	/^void GLWidget::animate()$/;"	f	class:GLWidget
+animate	widget.cpp	/^void Widget::animate()$/;"	f	class:Widget
+background	helper.h	/^		QBrush background;$/;"	m	class:Helper
+circleBrush	helper.h	/^		QBrush circleBrush;$/;"	m	class:Helper
+circlePen	helper.h	/^		QPen circlePen;$/;"	m	class:Helper
+elapsed	glwidget.h	/^		int elapsed;$/;"	m	class:GLWidget
+elapsed	widget.h	/^		int elapsed;$/;"	m	class:Widget
+helper	glwidget.h	/^		Helper *helper;$/;"	m	class:GLWidget
+helper	widget.h	/^		Helper *helper;$/;"	m	class:Widget
+helper	window.h	/^		Helper helper;$/;"	m	class:Window
+main	main.cpp	/^int main(int argc, char *argv[])$/;"	f
+paint	helper.cpp	/^void Helper::paint(QPainter *painter, QPaintEvent *event, int elapsed)$/;"	f	class:Helper
+paintEvent	glwidget.cpp	/^void GLWidget::paintEvent(QPaintEvent *event)$/;"	f	class:GLWidget
+paintEvent	widget.cpp	/^void Widget::paintEvent(QPaintEvent *event)$/;"	f	class:Widget
+textFont	helper.h	/^		QFont textFont;$/;"	m	class:Helper
+textPen	helper.h	/^		QPen textPen;$/;"	m	class:Helper

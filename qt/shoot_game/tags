@@ -1,0 +1,100 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.6	//
+AR	Makefile	/^AR            = ar cqs$/;"	m
+CANNONFIELD_H	cannonfield.h	2;"	d
+CC	Makefile	/^CC            = gcc$/;"	m
+CFLAGS	Makefile	/^CFLAGS        = -pipe -O2 -g -march=i386 -mcpu=i686 -Wall -W -D_REENTRANT $(DEFINES)$/;"	m
+CHK_DIR_EXISTS	Makefile	/^CHK_DIR_EXISTS= test -d$/;"	m
+COMPRESS	Makefile	/^COMPRESS      = gzip -9f$/;"	m
+COPY	Makefile	/^COPY          = cp -f$/;"	m
+COPY_DIR	Makefile	/^COPY_DIR      = $(COPY) -r$/;"	m
+COPY_FILE	Makefile	/^COPY_FILE     = $(COPY)$/;"	m
+CXX	Makefile	/^CXX           = g++$/;"	m
+CXXFLAGS	Makefile	/^CXXFLAGS      = -pipe -O2 -g -march=i386 -mcpu=i686 -Wall -W -D_REENTRANT $(DEFINES)$/;"	m
+CannonField	cannonfield.cpp	/^CannonField::CannonField(QWidget *parent) : QWidget(parent)$/;"	f	class:CannonField
+CannonField	cannonfield.h	/^class CannonField : public QWidget$/;"	c
+DEFINES	Makefile	/^DEFINES       = -DQT_NO_DEBUG -DQT_GUI_LIB -DQT_CORE_LIB$/;"	m
+DEL_DIR	Makefile	/^DEL_DIR       = rmdir$/;"	m
+DEL_FILE	Makefile	/^DEL_FILE      = rm -f$/;"	m
+DESTDIR	Makefile	/^DESTDIR       = $/;"	m
+DIST	Makefile	/^DIST          = \/usr\/share\/qt4\/mkspecs\/common\/g++-multilib.conf \\$/;"	m
+GAMEBOARD_H	gameboard.h	2;"	d
+GameBoard	gameboard.cpp	/^GameBoard::GameBoard(QWidget *parent) : QWidget(parent)$/;"	f	class:GameBoard
+GameBoard	gameboard.h	/^class GameBoard : public QWidget$/;"	c
+INCPATH	Makefile	/^INCPATH       = -I\/usr\/lib\/qt4\/mkspecs\/linux-g++ -I. -I\/usr\/include\/QtCore -I\/usr\/include\/QtCore -I\/usr\/include\/QtGui -I\/usr\/include\/QtGui -I\/usr\/include -I. -I. -I.$/;"	m
+INSTALL_DIR	Makefile	/^INSTALL_DIR   = $(COPY_DIR)$/;"	m
+INSTALL_FILE	Makefile	/^INSTALL_FILE  = install -m 644 -p$/;"	m
+INSTALL_PROGRAM	Makefile	/^INSTALL_PROGRAM = install -m 755 -p$/;"	m
+LCDRANGE_H	lcdrange.h	2;"	d
+LCDRange	lcdrange.cpp	/^LCDRange::LCDRange(QWidget *parent) : QWidget(parent)$/;"	f	class:LCDRange
+LCDRange	lcdrange.cpp	/^LCDRange::LCDRange(const QString &text, QWidget *parent) : QWidget(parent)$/;"	f	class:LCDRange
+LCDRange	lcdrange.h	/^class LCDRange : public QWidget$/;"	c
+LFLAGS	Makefile	/^LFLAGS        = $/;"	m
+LIBS	Makefile	/^LIBS          = $(SUBLIBS)   -lQtGui -lQtCore -lpthread$/;"	m
+LINK	Makefile	/^LINK          = g++$/;"	m
+MKDIR	Makefile	/^MKDIR         = mkdir -p$/;"	m
+MOVE	Makefile	/^MOVE          = mv -f$/;"	m
+OBJECTS	Makefile	/^OBJECTS       = cannonfield.o \\$/;"	m
+OBJECTS_DIR	Makefile	/^OBJECTS_DIR   = .\/$/;"	m
+QMAKE	Makefile	/^QMAKE         = \/usr\/lib\/qt-3.3\/bin\/qmake$/;"	m
+QMAKE_TARGET	Makefile	/^QMAKE_TARGET  = shoot_game$/;"	m
+RANLIB	Makefile	/^RANLIB        = $/;"	m
+SED	Makefile	/^SED           = sed$/;"	m
+SOURCES	Makefile	/^SOURCES       = cannonfield.cpp \\$/;"	m
+SYMLINK	Makefile	/^SYMLINK       = ln -sf$/;"	m
+TAR	Makefile	/^TAR           = tar -cf$/;"	m
+TARGET	Makefile	/^TARGET        = shoot_game$/;"	m
+angle	cannonfield.h	/^		int angle() const {	return currentAngle; }$/;"	f	class:CannonField
+autoShootTimer	cannonfield.h	/^		QTimer *autoShootTimer;$/;"	m	class:CannonField
+barrelHit	cannonfield.cpp	/^bool CannonField::barrelHit(const QPoint &pos) const$/;"	f	class:CannonField
+barrelPressed	cannonfield.h	/^		bool barrelPressed;$/;"	m	class:CannonField
+barrierRect	cannonfield.cpp	/^QRect CannonField::barrierRect() const$/;"	f	class:CannonField
+cannonField	gameboard.h	/^		CannonField *cannonField;$/;"	m	class:GameBoard
+cannonRect	cannonfield.cpp	/^QRect CannonField::cannonRect() const$/;"	f	class:CannonField
+currentAngle	cannonfield.h	/^		int currentAngle;$/;"	m	class:CannonField
+currentForce	cannonfield.h	/^		int currentForce;$/;"	m	class:CannonField
+fire	gameboard.cpp	/^void GameBoard::fire()$/;"	f	class:GameBoard
+force	cannonfield.h	/^		int force() const {	return currentForce; }$/;"	f	class:CannonField
+gameEnded	cannonfield.h	/^		bool gameEnded;$/;"	m	class:CannonField
+gameOver	cannonfield.h	/^		bool gameOver() const { return gameEnded; }$/;"	f	class:CannonField
+hit	gameboard.cpp	/^void GameBoard::hit()$/;"	f	class:GameBoard
+hits	gameboard.h	/^		QLCDNumber *hits;$/;"	m	class:GameBoard
+init	lcdrange.cpp	/^void LCDRange::init()$/;"	f	class:LCDRange
+isShooting	cannonfield.cpp	/^bool CannonField::isShooting() const$/;"	f	class:CannonField
+label	lcdrange.h	/^		QLabel *label;$/;"	m	class:LCDRange
+main	main.cpp	/^int main(int argc, char *argv[])$/;"	f
+missed	gameboard.cpp	/^void GameBoard::missed()$/;"	f	class:GameBoard
+mouseMoveEvent	cannonfield.cpp	/^void CannonField::mouseMoveEvent(QMouseEvent *event)$/;"	f	class:CannonField
+mousePressEvent	cannonfield.cpp	/^void CannonField::mousePressEvent(QMouseEvent *event)$/;"	f	class:CannonField
+mouseReleaseEvent	cannonfield.cpp	/^void CannonField::mouseReleaseEvent(QMouseEvent *event)$/;"	f	class:CannonField
+moveShot	cannonfield.cpp	/^void CannonField::moveShot()$/;"	f	class:CannonField
+newGame	gameboard.cpp	/^void GameBoard::newGame()$/;"	f	class:GameBoard
+newTarget	cannonfield.cpp	/^void CannonField::newTarget()$/;"	f	class:CannonField
+paintBarrier	cannonfield.cpp	/^void CannonField::paintBarrier(QPainter &painter)$/;"	f	class:CannonField
+paintCannon	cannonfield.cpp	/^void CannonField::paintCannon(QPainter &painter)$/;"	f	class:CannonField
+paintEvent	cannonfield.cpp	/^void CannonField::paintEvent(QPaintEvent *)$/;"	f	class:CannonField
+paintShot	cannonfield.cpp	/^void CannonField::paintShot(QPainter &painter)$/;"	f	class:CannonField
+paintTarget	cannonfield.cpp	/^void CannonField::paintTarget(QPainter &painter)$/;"	f	class:CannonField
+restartGame	cannonfield.cpp	/^void CannonField::restartGame()$/;"	f	class:CannonField
+setAngle	cannonfield.cpp	/^void CannonField::setAngle(int angle)$/;"	f	class:CannonField
+setForce	cannonfield.cpp	/^void CannonField::setForce(int force)$/;"	f	class:CannonField
+setGameOver	cannonfield.cpp	/^void CannonField::setGameOver()$/;"	f	class:CannonField
+setRange	lcdrange.cpp	/^void LCDRange::setRange(int minValue, int maxValue)$/;"	f	class:LCDRange
+setText	lcdrange.cpp	/^void LCDRange::setText(const QString &text)$/;"	f	class:LCDRange
+setValue	lcdrange.cpp	/^void LCDRange::setValue(int value)$/;"	f	class:LCDRange
+shoot	cannonfield.cpp	/^void CannonField::shoot()$/;"	f	class:CannonField
+shootAngle	cannonfield.h	/^		float shootAngle;$/;"	m	class:CannonField
+shootForce	cannonfield.h	/^		float shootForce;$/;"	m	class:CannonField
+shotRect	cannonfield.cpp	/^QRect CannonField::shotRect() const$/;"	f	class:CannonField
+shotsLeft	gameboard.h	/^		QLCDNumber *shotsLeft;$/;"	m	class:GameBoard
+sizeHint	cannonfield.cpp	/^QSize CannonField::sizeHint() const$/;"	f	class:CannonField
+slider	lcdrange.h	/^		QSlider *slider;$/;"	m	class:LCDRange
+target	cannonfield.h	/^		QPoint target;$/;"	m	class:CannonField
+targetRect	cannonfield.cpp	/^QRect CannonField::targetRect() const$/;"	f	class:CannonField
+text	lcdrange.cpp	/^QString LCDRange::text() const$/;"	f	class:LCDRange
+timerCount	cannonfield.h	/^		int timerCount;$/;"	m	class:CannonField
+value	lcdrange.cpp	/^int LCDRange::value() const$/;"	f	class:LCDRange
