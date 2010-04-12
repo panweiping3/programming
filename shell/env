@@ -1,0 +1,7 @@
+#! /bin/bash
+
+echo $0
+echo "NAME="$NAME 
+#source setname
+. ./setname
+echo "NAME="$NAME 

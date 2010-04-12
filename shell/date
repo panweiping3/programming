@@ -1,0 +1,5 @@
+#! /bin/sh
+
+birthday=$(date +%Y%m%d%H%M)
+echo $birthday
+
