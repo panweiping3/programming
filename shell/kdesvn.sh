@@ -11,7 +11,7 @@ then
         cd ..
     done
 else
-for dir in kdesupport kdelibs kdebase kdeartwork kdegraphics kdeplasma-addons 
+for dir in kdesupport kdelibs kdebase kdeartwork kdegraphics kdeplasma-addons kdepimlibs kdepim kdeadmin
 do
     cd $dir
     svn cleanup
