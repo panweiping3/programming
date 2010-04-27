@@ -1,5 +1,10 @@
+/* 
+ * Maybe it can lookup ip address of sina ?
+ *
+ */
+
 #include   <stdio.h>  
-#include   <string.h>  
+#include   <stdlib.h>  
 #include   <sys/types.h>  
 #include   <sys/socket.h>  
 #include   <netinet/in.h>  
@@ -8,33 +13,41 @@
 
 int main(int argc, char *argv[])  
 {  
-    unsigned long addr;  
+    int i;
     struct   hostent *hp;  
-    char **p;  
+    char *p;  
     const char *hostname = argv[1];  
+    char addr_str[INET_ADDRSTRLEN];
     if (argc != 2) {
         fprintf(stderr, "./a.out name\n");
         return 2;
     }
 
+    printf("%s\t", hostname);
     hp = gethostbyname(hostname);  
-    if (hp == NULL) {  
+    if (!hp) {  
         printf("host information not found !\n");  
         return;  
     }  
 
-    for (p = hp->h_addr_list; *p != 0; p++) {  
-        struct in_addr in;  
-        char **q;  
-        memcpy(&in.s_addr, *p, sizeof(in.s_addr));  
-        printf("%s\t%s", inet_ntoa(in), hp->h_name);  
-        for (q = hp->h_aliases; *q != 0; q++) {
-            printf("   %s",   *q);  
+    printf("%s\t", hp->h_name);
+    for (i=0; ; i++) {
+        p = hp->h_addr_list[i];
+        if (p) {
+            if (!inet_ntop( AF_INET, 
+                            (void *)p, 
+                            addr_str, 
+                            INET_ADDRSTRLEN)) {
+                fprintf(stderr, "inet_ntop error\n");
+                exit (2);
+            }
+            printf("%s\t", addr_str);
+        } else {
+            printf("\n");
+            break;
         }
+    }
 
-        putchar('\n');  
-    }  
-
-    return;    
+    return 0;    
 }   
 
