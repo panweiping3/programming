@@ -2,6 +2,7 @@
  * This program is to read file /etc/networks
  * TODO:
  * What's the use of /etc/networks ?
+ * Maybe it's related with route.
  */
 
 #include <stdio.h>

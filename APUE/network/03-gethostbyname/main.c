@@ -1,6 +1,6 @@
 /* 
  * Maybe it can lookup ip address of sina ?
- *
+ * Yes. ./a.out www.sina.com.cn
  */
 
 #include   <stdio.h>  

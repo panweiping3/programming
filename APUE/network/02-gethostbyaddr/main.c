@@ -1,16 +1,25 @@
+/*
+ * gethostbyaddr only search address in file /etc/hosts.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <netdb.h>
-#include <stdio.h>
 #include <sys/socket.h>
 #include <string.h>
 
-int main(void)
+int main(int argc, char *argv[])
 {
     struct in_addr host_addr;
     struct hostent *host_info;
 
-    inet_aton("127.0.0.1", &host_addr);
+    if (argc != 2) {
+        printf("./a.out 127.0.0.1\n");
+        exit(EXIT_FAILURE);
+    }
+
+    printf("argv[1]:%s\n", argv[1]);
+    inet_aton(argv[1], &host_addr);
     host_info = gethostbyaddr(&host_addr, 4, AF_INET);
 
     if(host_info == NULL) {

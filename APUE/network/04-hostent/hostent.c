@@ -1,7 +1,7 @@
 /*
  * this program is to read file /etc/hosts,
  * TODO:
- * What's the use of /etc/hosts ?
+ * /etc/hosts can help reslove domain name before/after DNS.
  */
 
 #include <stdio.h>
