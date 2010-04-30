@@ -10,13 +10,12 @@ INCLUDEPATH += .
 CONFIG += debug
 
 # Input
-HEADERS += libsb.h \
-            sb_http.h
-SOURCES += sb_http.cpp
+HEADERS += libsb.h sb_http.h
+SOURCES += libsb.cpp sb_http.cpp
 
 target.path = /usr/lib
 sources.files = libsb.h
 sources.path  = /usr/include
 
 INSTALLS += target sources 
-
+QMAKE_CLEAN += libsb.so*

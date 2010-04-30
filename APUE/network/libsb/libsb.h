@@ -20,7 +20,7 @@ enum ERROR_TYPE {
 /*
  * construct a new network connection.
  * return value:
- * >0 : a fd that user can write data into it.
+ * >=0 : a fd that user can write data into it.
  */
 int open_network(const char *url, int port, NETWORK_TYPE type);
 
