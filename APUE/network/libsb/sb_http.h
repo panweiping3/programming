@@ -7,6 +7,7 @@
 class QUrl;
 class QHttp;
 class QFile;
+class QHttpRequestHeader;
 class QHttpResponseHeader;
 
 class SBHttp : public QObject
@@ -35,8 +36,10 @@ private slots:
     void readAll(const QHttpResponseHeader &);
 
 private:
-    QHttp *http;
+    QHttp *http_p;
+    QHttpRequestHeader *http_request_header;
     QFile *downloadFile;
+    QByteArray http_send_bytes;
 };
 
 #endif
