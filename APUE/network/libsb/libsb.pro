@@ -3,12 +3,20 @@
 ######################################################################
 
 QT += network
-TEMPLATE = app
-TARGET =  
+TEMPLATE = lib 
+TARGET = sb
 DEPENDPATH += .
 INCLUDEPATH += .
 CONFIG += debug
 
 # Input
-HEADERS += sb_http.h
-SOURCES += main.cpp sb_http.cpp
+HEADERS += libsb.h \
+            sb_http.h
+SOURCES += sb_http.cpp
+
+target.path = /usr/lib
+sources.files = libsb.h
+sources.path  = /usr/include
+
+INSTALLS += target sources 
+
