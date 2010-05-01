@@ -7,7 +7,7 @@ then
         cd $dir"_build"
         rm CMakeCache.txt -rf
         cmake "../"$dir -DCMAKE_INSTALL_PREFIX=/opt/kde/
-        make -j4
+        make -j8
         sudo make install
         sudo /sbin/ldconfig
         echo "make "$dir "successfully !"
@@ -19,7 +19,7 @@ for dir in kdesupport kdelibs kdebase kdeartwork kdegraphics kdeplasma-addons kd
         cd $dir"_build"
         rm CMakeCache.txt -rf
         cmake "../"$dir -DCMAKE_INSTALL_PREFIX=/opt/kde/
-        make -j4
+        make -j8
         sudo make install
         sudo /sbin/ldconfig
         echo "make "$dir "successfully !"
