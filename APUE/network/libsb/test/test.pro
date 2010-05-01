@@ -3,7 +3,7 @@
 ######################################################################
 
 TEMPLATE = app
-TARGET = 
+TARGET = test
 DEPENDPATH += .
 INCLUDEPATH += .
 LIBS += -lsb
