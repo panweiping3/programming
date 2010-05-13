@@ -1,7 +1,6 @@
 /*
- * gethostbyaddr only search address in file /etc/hosts.
+ * you can use ./a.out IP of baidu
  */
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <netdb.h>
