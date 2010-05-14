@@ -1,17 +1,18 @@
 #include <stdio.h>
     
 struct s{
-    char i;
-    int j;
+	unsigned short flag;
+	unsigned short meta_flag;
+	unsigned int offset;
+	char UUID[40];
+	char HOST[40];
 };
 
 int main(int argc, char *argv[])
 {
     struct s s_t;
 
-    printf("&s_t%llx\n", &s_t);
-    printf("&s_t.i=%llx\n", &s_t.i);
-    printf("&s_t.j=%llx\n", &s_t.j);
 
+    printf("%d\n", sizeof(struct s));
     return 0;
 }

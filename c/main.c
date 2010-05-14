@@ -1,8 +1,7 @@
+#include <stdio.h>
 
-#define BIG_FILE_UUID_LENGTH	(SHA_DIGEST_LENGTH * 2)	
-#define BIG_FILE_BLOCK_SIZE	(512 * 1024)
-#define BIG_FILE_ENTRY_SIZE	(BIG_FILE_UUID_LENGTH + BIG_FILE_BLOCK_SIZE)
-#define BIG_FILE_SAFE_SIZE	(512 * 1024 * 1024)
-#define BIG_FILE_MAX_SIZE	(4 * 1024 * 1024 * 1024 - BIG_FILE_SAFE_SIZE)
-#define BIG_FILE_ENTRY_COUNT	(BIG_FILE_MAX_SIZE) / (BIG_FILE_ENTRY_SIZE)
-
+int main(int argc, char *argv[])
+{
+	
+	return 0;
+}
