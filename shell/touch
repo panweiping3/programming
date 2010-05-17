@@ -1,0 +1,17 @@
+# this is a shell to test how many files in ONE directory
+
+#! /bin/sh
+i=0
+while (true) 
+	do
+		let "i = $i + 1"
+		touch $i
+		RES=`echo $?`
+		if [ $RES = "1" ]
+		then
+			echo $i" files are created"
+			break
+		else
+			echo $i" is created, res="$RES
+		fi
+	done
