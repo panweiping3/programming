@@ -31,10 +31,8 @@ int main(int argc, char *argv[])
 
 		qDebug() <<__FILE__ << __LINE__ << __func__ << file.size();
 		file.write("333");
-		qDebug() <<__FILE__ << __LINE__ << __func__ << file.size();
-		file.seek(0);
-		qDebug() <<__FILE__ << __LINE__ << __func__ << file.pos();
-		file.seek(3);
+		file.seek(4);
+		file.write("444");
 		qDebug() <<__FILE__ << __LINE__ << __func__ << file.pos();
 			file.close();
     }
