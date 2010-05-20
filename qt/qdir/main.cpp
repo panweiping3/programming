@@ -1,22 +1,20 @@
 #include <QtGui>
 #include <QDir>
+#include <QFile>
 #include <QDebug>
-
-const QString DIR = "./tmpdir";
 
 int main(int argc, char *argv[])
 {
-	QDir dir;
+	QDir dir("/tmp/big_file/");
 	
-	if (dir.exists(DIR)) {
-		qDebug() <<__FILE__ << __LINE__ << __func__ << "dir exist";
-		return 0;
+	QFileInfoList list = 
+	dir.entryInfoList(QStringList("rfbackup_bigfile_data_*"), 
+								QDir::Files|QDir::Writable, 
+								QDir::Name);
+	for (int i=0; i<list.size(); ++i) {
+		qDebug() <<__FILE__ << __LINE__ << __func__ << list.at(i).absoluteFilePath();
 	}
-
-	if (dir.mkdir(DIR)) {
-		qDebug() <<__FILE__ << __LINE__ << __func__ << "mkdir";
-		return 0;
-	}
-    
+	qDebug() <<__FILE__ << __LINE__ << __func__ << list.size();
+	//qDebug() <<__FILE__ << __LINE__ << __func__ << list;
 	return 0;
 }
