@@ -14,5 +14,10 @@ int main(int argc, char *argv[])
 
 
     printf("%d\n", sizeof(struct s));
+    printf("%x\n", &s_t.flag);
+    printf("%x\n", &s_t.meta_flag);
+    printf("%x\n", &s_t.offset);
+    printf("%x\n", &s_t.UUID);
+    printf("%x\n", &s_t.HOST);
     return 0;
 }
