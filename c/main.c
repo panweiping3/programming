@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include <sys/time.h>
 
-int main(int argc, char *argv[])
+int main()
 {
-	
-	return 0;
+	printf("%d\n", sizeof(struct timeval));
+
 }
