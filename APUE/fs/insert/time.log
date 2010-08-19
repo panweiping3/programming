@@ -1,0 +1,40 @@
+file name=./data_1
+file size=1024
+offset   =0
+data     =aaa
+0.00user 0.00system 0:00.00elapsed 50%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+0outputs (0major+125minor)pagefaults 0swaps
+ 
+ 
+file name=./data_16
+file size=16384
+offset   =0
+data     =aaa
+0.00user 0.02system 0:00.03elapsed 68%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+8outputs (0major+129minor)pagefaults 0swaps
+ 
+ 
+file name=./data_256
+file size=262144
+offset   =0
+data     =aaa
+0.02user 0.36system 0:00.39elapsed 98%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+8outputs (0major+202minor)pagefaults 0swaps
+ 
+ 
+file name=./data_4096
+file size=4194304
+offset   =0
+data     =aaa
+0.39user 5.83system 0:06.24elapsed 99%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+8outputs (0major+1148minor)pagefaults 0swaps
+ 
+ 
+file name=./data_65536
+file size=67108864
+offset   =0
+data     =aaa
+6.59user 94.46system 1:41.13elapsed 99%CPU (0avgtext+0avgdata 0maxresident)k
+0inputs+87216outputs (0major+16507minor)pagefaults 0swaps
+ 
+ 

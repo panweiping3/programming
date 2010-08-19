@@ -5,13 +5,27 @@ typedef struct {
   char k; 
 }Test; 
 
+#define container_of(ptr, type, member) ({          		\
+	const typeof( ((type *)0)->member ) *__mptr = (ptr);    \
+    (type *)( (char *)__mptr - offsetof(type,member) );})
+
+#define offsetof(TYPE, MEMBER) ((size_t) &((TYPE *)0)->MEMBER)
+
 int main() 
 { 
-  Test *p = 0; 
-  printf("p->i %x\n", &(p->i)); 
-//  printf("p->i %x %x\n", &(p->i), __builtin_offsetof(Test, i)); 
-//  printf("p->j %x %x\n", &(p->j), __builtin_offsetof(Test, j)); 
-//  printf("p->k %x %x\n", &(p->k), __builtin_offsetof(Test, k)); 
+  	Test *p = 0; 
+	printf("&p->j=%x, offest(j)=%d\n",  &(p->j), __builtin_offsetof(Test, j)); 
 
-  return 0;
+	Test t;
+	t.i = 1;
+	t.j = 2;
+	t.k = 3;
+
+	printf("struct Test i=%d, j=%d, k=%d\n", t.i, t.j, t.k);
+
+	char *pp = &t.k;
+	p = container_of(pp, Test, k);
+	printf("struct Test i=%d, j=%d, k=%d\n", p->i, p->j, p->k);
+
+	return 0;
 } 
