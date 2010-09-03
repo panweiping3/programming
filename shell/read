@@ -1,0 +1,6 @@
+#! /bin/bash
+
+NAME=""
+read NAME
+echo "NAME="$NAME
+

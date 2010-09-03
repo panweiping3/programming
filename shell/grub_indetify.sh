@@ -49,18 +49,14 @@ is_grub_installed()
 {
 	TMP_DISK=$1
 	TMP_FILE=first_sector
-    dd if=$TMP_DISK of=$TMP_FILE bs=512 count=1 > /dev/null 2>&1
+    	dd if=$TMP_DISK of=$TMP_FILE bs=512 count=1 > /dev/null 2>&1
 	GRUB_FLAG_0X3e=` hexdump $TMP_FILE -s 0x3e -n 1 -e '"%02x"' `
 	GRUB_FLAG_0X3f=` hexdump $TMP_FILE -s 0x3f -n 1 -e '"%02x"' `
 
 	if [ $GRUB_FLAG_0X3e -eq 3 ] && [ $GRUB_FLAG_0X3f -eq 2 ]
 	then
-		GRUB_CHARACTOR_0X188=`hexdump $TMP_FILE -s 0x188 -n 1 -e '"%01c"'`
-		GRUB_CHARACTOR_0X189=`hexdump $TMP_FILE -s 0x189 -n 1 -e '"%01c"'`
-		GRUB_CHARACTOR_0X18a=`hexdump $TMP_FILE -s 0x18a -n 1 -e '"%01c"'`
-		GRUB_CHARACTOR_0X18b=`hexdump $TMP_FILE -s 0x18b -n 1 -e '"%01c"'`
-		GRUB_STRING=$GRUB_CHARACTOR_0X188$GRUB_CHARACTOR_0X189$GRUB_CHARACTOR_0X18a$GRUB_CHARACTOR_0X18b
-		if [ $GRUB_STRING = "GRUB" ]
+		GRUB_STRING_FLAG=`grep -c GRUB $TMP_FILE`
+		if [ $GRUB_STRING_FLAG = "1" ]
 		then
 			return 1
 		fi
@@ -117,36 +113,29 @@ get_grub_partition()
 		rm -rf $DIR 
 	fi
 	
-	is_grub2_installed $DISK
-	GRUB2_INSTALL_FLAG=`echo $?`
-	if [ $GRUB2_INSTALL_FLAG -eq 1 ]
-	then
-		RESULT="0"
-	else 
-		if [ $STAGE2_DEC_ADDRESS -eq 1 ] ; then
-		    dd if=$DISK of=stage1_5 bs=512 count=2 skip=1 > /dev/null 2>&1
-		    RESULT_HEX=` hexdump stage1_5 -s 0x219 -n 1 -e '"%02x"' `
-			rm -f stage1_5 
-		    RESULT=$(( 0x$RESULT_HEX + 1 ))
-		else
-		    # use fdisk to decide which partition include the stage2 sectors,
-		    # any better method?
-		    DISK_PARTITIONS="disk_partions"
-		    fdisk -l -u | sed '1,/.*Device Boot.*/d' | sed '/.*Ext*/d' | sed 's/\*/ /' > $DISK_PARTITIONS
-		    LINE=`cat $DISK_PARTITIONS | wc -l`
-		
-		    for i in `seq $LINE`
-		    do
-				TMP_RESULT=$(cat $DISK_PARTITIONS | awk "NR==$i {print \$1}")
-				TMP_START=$(cat $DISK_PARTITIONS | awk "NR==$i {print \$2}")
-				TMP_END=$(cat $DISK_PARTITIONS | awk "NR==$i {print \$3}")
-			if [ $STAGE2_DEC_ADDRESS -gt $TMP_START ] && [ $STAGE2_DEC_ADDRESS -lt $TMP_END ]
-			then
-			    RESULT=`echo $TMP_RESULT | sed 's/^[^0-9]*//'`
-			    break
-			fi
-		    done
+	if [ $STAGE2_DEC_ADDRESS -eq 1 ] ; then
+	    dd if=$DISK of=stage1_5 bs=512 count=2 skip=1 > /dev/null 2>&1
+	    RESULT_HEX=` hexdump stage1_5 -s 0x219 -n 1 -e '"%02x"' `
+		rm -f stage1_5 
+	    RESULT=$(( 0x$RESULT_HEX + 1 ))
+	else
+	    # use fdisk to decide which partition include the stage2 sectors,
+	    # any better method?
+	    DISK_PARTITIONS="disk_partions"
+	    fdisk -l -u | sed '1,/.*Device Boot.*/d' | sed '/.*Ext*/d' | sed 's/\*/ /' > $DISK_PARTITIONS
+	    LINE=`cat $DISK_PARTITIONS | wc -l`
+	
+	    for i in `seq $LINE`
+	    do
+			TMP_RESULT=$(cat $DISK_PARTITIONS | awk "NR==$i {print \$1}")
+			TMP_START=$(cat $DISK_PARTITIONS | awk "NR==$i {print \$2}")
+			TMP_END=$(cat $DISK_PARTITIONS | awk "NR==$i {print \$3}")
+		if [ $STAGE2_DEC_ADDRESS -gt $TMP_START ] && [ $STAGE2_DEC_ADDRESS -lt $TMP_END ]
+		then
+		    RESULT=`echo $TMP_RESULT | sed 's/^[^0-9]*//'`
+		    break
 		fi
+	    done
 	fi
 	
 	popd > /dev/null 2>&1
@@ -201,7 +190,7 @@ get_grub2_partition()
 	rm -rf $DIR 
 	if [ $RESULT -gt 0 ] && [ $RESULT -le 16 ]
 	then
-		GRUB_PARTITION=$DISK$RESULT
+		GRUB2_PARTITION=$DISK$RESULT
 	fi
 }
 
@@ -211,6 +200,7 @@ GRUB_PARTITION=""
 get_grub_partition /dev/sda
 echo "$GRUB_PARTITION"
 
+GRUB2_PARTITION=""
 get_grub2_partition /dev/sda
-echo "$GRUB_PARTITION"
+echo "$GRUB2_PARTITION"
 

@@ -1,0 +1,12 @@
+#! /bin/sh
+LOG="/tmp/pwp.log"
+
+set -x 
+exec 1<>$LOG
+#exec >> $LOG 2>&1
+echo  `date`
+echo "hwllo world "
+set +x
+exit
+
+
