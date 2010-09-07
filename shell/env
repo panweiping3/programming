@@ -1,5 +1,5 @@
 #! /bin/bash
-
+echo $#
 echo $0
 echo "NAME="$NAME 
 #source setname

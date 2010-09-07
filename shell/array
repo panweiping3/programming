@@ -1,0 +1,6 @@
+# this is a shell to test how many files in ONE directory
+
+#! /bin/sh
+BACKUP_DIRS=("lib" "libsb" "libharefs" "sync-agent" "nodeservice" "cmdline")
+
+echo "${BACKUP_DIRS[@]}"
