@@ -1,0 +1,16 @@
+#! /bin/bash
+
+# print each parameter
+
+echo "There are "$#" parameters."
+echo "They are \"$@\""
+echo "They are \"$*\""
+
+i=0;
+while [ $# != 0 ]
+do
+	echo "parameter $i is:"$1
+	i=$((i++))
+	shift
+done
+
