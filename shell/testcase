@@ -1,0 +1,35 @@
+#! /bin/sh
+PWD=`pwd`
+echo "PWD="$PWD
+NUM1=250
+NUM2=100
+
+for i in `seq $NUM1`
+do
+	mkdir data_$i	>/dev/null 2>&1
+	pushd data_$i   >/dev/null 2>&1
+
+	for j in `seq $NUM2`
+	do
+		mkdir data_$j >/dev/null 2>&1
+		pushd data_$j >/dev/null 2>&1
+	done
+
+	cp ~/data .
+
+	for j in `seq $NUM2`
+	do
+		popd >/dev/null 2>&1
+	done
+	
+	popd >/dev/null 2>&1
+	TMP_PWD=`pwd`
+	echo "TMP_PWD="$TMP_PWD
+	if [ $PWD != $TMP_PWD ]
+	then
+		echo "pupd error"
+		exit 1
+	fi
+	echo "iteration $i finished!"
+done
+

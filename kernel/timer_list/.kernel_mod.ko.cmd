@@ -1,0 +1,1 @@
+cmd_/home/pwp/myprogram/programming/kernel/timer_list/kernel_mod.ko := ld -r -m elf_i386  --build-id -o /home/pwp/myprogram/programming/kernel/timer_list/kernel_mod.ko /home/pwp/myprogram/programming/kernel/timer_list/kernel_mod.o /home/pwp/myprogram/programming/kernel/timer_list/kernel_mod.mod.o

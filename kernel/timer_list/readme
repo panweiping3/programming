@@ -1,0 +1,8 @@
+cat /proc/devices
+find an unused major X
+ 
+insmod kernel_mod second_major=X
+
+mknod  /dev/second c X 0
+./test
+

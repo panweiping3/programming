@@ -1,6 +1,8 @@
 #! /bin/bash
 
 NAME=""
+echo $IFS
+echo "please input NAME:"
 read NAME
 echo "NAME="$NAME
 

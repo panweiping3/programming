@@ -1,0 +1,12 @@
+#! /bin/bash
+
+function print_func {
+	echo $1 
+	return 90
+}
+
+AAA=$(print_func "iiiiiiiiii")
+echo $AAA
+print_func "2222222222"
+AAA=$?
+echo $AAA

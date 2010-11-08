@@ -1,0 +1,11 @@
+#! /bin/bash
+
+echo $$
+COMMAND="echo HUP signal caught!"
+trap '$COMMAND' HUP
+
+while true
+do
+	sleep 2
+	date > /dev/null
+done
