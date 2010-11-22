@@ -17,6 +17,7 @@ void out_time(void)
         tm = time(NULL);
         start = (long)tm;
         printf(" now start ...\n");
+		return;
     }
 
     printf(" second: %ld \n", (long)(time(NULL)) - start);
@@ -46,12 +47,19 @@ int main(void)
     }
     
     semid = get_sem(key);
-    for (i = 0;i < 3;i ++){
-        sleep(2);
-        //wait_zero(semid);
-        v(semid);
-        printf("Message geted is: %s \n", shm_p + 1);
-        out_time();
+//    for (i = 0;i < 10;i ++){
+	while (1) {
+		p(semid);
+		fprintf(stderr, "%s %d %s :client lock\n", __FILE__, __LINE__, __func__);	
+		sleep(10);
+		v(semid);
+		fprintf(stderr, "%s %d %s :client unlock\n", __FILE__, __LINE__, __func__);	
+
+//        sleep(2);
+// 		  wait_zero(semid);
+//        v(semid);
+//        printf("Message geted is: %s \n", shm_p + 1);
+//        out_time();
     }
 
     shmdt(shm_p);

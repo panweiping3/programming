@@ -14,7 +14,7 @@ int sem_creat(key_t key)
 {
     union semun sem;
     int semid;
-    sem.val = 0;
+    sem.val = 1;
     semid = semget(key, 1, IPC_CREAT | 0666);
     if (-1 == semid){
         printf("create semaphore error\n");
@@ -28,9 +28,7 @@ int sem_creat(key_t key)
 //获取信号量
 int get_sem(key_t key)
 {
-    union semun sem;
     int semid;
-    sem.val = 0;
     semid = semget(key, 0, 0);
     if (-1 ==  semid){
         printf("create semaphore error\n");
@@ -51,14 +49,14 @@ void del_sem(int semid)
 //p
 int p(int semid)
 {
-    struct sembuf sops={0, +1, IPC_NOWAIT};
+    struct sembuf sops={0, -1, 0};
     return (semop(semid, &sops, 1));
 }
 
 //v
 int v(int semid)
 {
-    struct sembuf sops={0, -1, IPC_NOWAIT};
+    struct sembuf sops={0, +1, 0};
     return (semop(semid, &sops, 1));
 }
 

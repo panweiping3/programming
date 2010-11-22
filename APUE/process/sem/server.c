@@ -31,13 +31,23 @@ int main()
     semid = sem_creat(key);
 
     char i;
-    for (i = 0;i <= 3;i++){
+//    for (i = 0;i <= 3;i++){
+	while (1) {
+		p(semid);
+		fprintf(stderr, "%s %d %s :server lock\n", __FILE__, __LINE__, __func__);	
+		
+		sleep (3);
+		v(semid);
+		fprintf(stderr, "%s %d %s :server unlock\n", __FILE__, __LINE__, __func__);	
+		/*
         sleep(1);
         p(semid);
+			fprintf(stderr, "%s %d %s \n", __FILE__, __LINE__, __func__);	
         sleep(READTIME);
         msg[5] = '0' + i;
         memcpy(shm_p, msg, sizeof(msg));
         sleep(3);
+		*/
 //        v(semid);
     }
 
