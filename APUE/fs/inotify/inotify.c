@@ -16,7 +16,7 @@ size_t len = read (fd, buf, BUF_LEN);
 //_syscall2(int, inotify_rm_watch, int, fd, __u32, mask);
 
 char * monitored_files[] = {
-	"/media/disk",
+	"/mnt/",
 };
 
 struct wd_name {
