@@ -6,23 +6,27 @@ using namespace std;
 class A
 {
 	public:
-	//explicit A(string a) // cann't compile if adding explicit 
-    A(string a)
-		{
-			cout << "A constructor is called" << endl;	
-		}
+        A(string a)
+	    {
+	        cout << "A constructor is called" << endl;	
+	    }
+        ~A()
+        {
+	        cout << "A destructor is called" << endl;	
+        }
 };
 
 
-void B(A a)
+void B(const A &a)
 {
-	cout << "B func is called" << endl;	
+	cout << "B is called" << endl;	
 }
 			
 
 int main()
 {
-	string aaa = "panweiping";
+	string aaa = "tieto";
 	B(aaa);
-
+    
+    return 0;
 }
