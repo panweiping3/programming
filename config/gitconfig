@@ -1,0 +1,45 @@
+[user]
+name = Pan Weiping 
+email = panweiping3@gmail.com
+
+[format]
+signoff = true
+
+[core]
+editor = vim
+
+[color]
+status = auto
+branch = auto
+diff = auto
+ui = true
+pager = true
+
+[color "branch"]
+current = yellow reverse
+local = yellow
+remote = green
+
+[color "diff"]
+meta = yellow bold
+frag = magenta bold
+old = red bold
+new = green bold
+
+[color "status"]
+added = yellow
+changed = green
+untracked = cyan
+
+[alias]
+ci = commit -aesv
+st = status
+br = branch
+co = checkout
+df = diff
+
+[sendemail]
+smtpserver = smtp.gmail.com
+smtpencryption = yes 
+smtpserverport = 587
+smtpuser = panweiping3@gmail.com
