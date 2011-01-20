@@ -1,1 +1,0 @@
-cmd_/root/learn_driver/hello_cpuinfo/hello_cpuinfo.ko := ld -m elf_i386 -m elf_i386 -r -o /root/learn_driver/hello_cpuinfo/hello_cpuinfo.ko /root/learn_driver/hello_cpuinfo/hello_cpuinfo.o /root/learn_driver/hello_cpuinfo/hello_cpuinfo.mod.o

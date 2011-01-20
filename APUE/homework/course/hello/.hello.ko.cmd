@@ -1,1 +1,0 @@
-cmd_/home/pwp/programming/APUE/homework/course/hello/hello.ko := ld -r -m elf_i386  --build-id -o /home/pwp/programming/APUE/homework/course/hello/hello.ko /home/pwp/programming/APUE/homework/course/hello/hello.o /home/pwp/programming/APUE/homework/course/hello/hello.mod.o
