@@ -10,3 +10,5 @@ echo $AAA
 print_func "2222222222"
 AAA=$?
 echo $AAA
+
+echo $$

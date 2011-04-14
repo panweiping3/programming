@@ -1,0 +1,10 @@
+#! /bin/bash
+
+echo "this is $0"
+echo "name:"$NAME
+
+print_func
+
+read
+
+echo $$

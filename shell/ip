@@ -1,0 +1,45 @@
+#!/bin/sh
+ 
+if [ $# -ne 2 ]
+then
+	echo "$0 -[i|n] [ip|num]"
+	exit 1
+fi
+ 
+function num2ip()
+{
+	num=$1
+	a=$((num>>24))
+	b=$((num>>16&0xff))
+	c=$((num>>8&0xff))
+	d=$((num&0xff))
+ 
+	echo "$d.$c.$b.$a"
+}
+ 
+function ip2num()
+{
+	ip=$1
+	a=`echo $ip | awk -F'.' '{print $1}'`
+	b=`echo $ip | awk -F'.' '{print $2}'`
+	c=`echo $ip | awk -F'.' '{print $3}'`
+	d=`echo $ip | awk -F'.' '{print $4}'`
+
+    echo "a="$a
+    echo "b="$b
+    echo "c="$c
+    echo "d="$d
+ 
+	echo "$(((d<<24)+(c<<16)+(b<<8)+a))"
+}
+ 
+if [ "$1" = "-i" ]
+then
+	ip2num $2
+elif [ "$1" = "-n" ]
+then
+	num2ip $2
+else
+	echo "$0 -[i|n] [ip|num]"
+	exit 1
+fi

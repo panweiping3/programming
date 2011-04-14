@@ -1,0 +1,13 @@
+#! /bin/bash
+
+. ./func
+
+print_func
+
+echo "this is main func"
+echo "name:"$NAME
+echo $$
+
+./work1
+
+./work2

@@ -1,0 +1,12 @@
+#! /bin/bash
+
+NAME=123
+export NAME
+
+function print_func {
+	echo "print_func is called!"
+    echo $$
+    read
+	return 90
+}
+

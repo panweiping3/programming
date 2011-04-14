@@ -1,0 +1,26 @@
+#! /bin/sh
+
+A="0x12"
+B="0x12"
+
+(( C=$A^$B ))
+echo $C
+
+A="0x12"
+B="0x13"
+
+(( C=$A^$B ))
+echo $C
+
+A="0x12"
+B="0x72"
+
+(( C=$A^$B ))
+echo $C
+
+(( C=$C%2 ))
+echo $C
+
+A=7
+(( C=$A & 0x14))
+echo $C

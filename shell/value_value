@@ -1,0 +1,21 @@
+#! /bin/bash
+
+NAME0="aaaaaa"
+I=0
+t=NAME"$I"
+echo $t
+
+eval z=\$$t
+echo $z
+
+a=letter_of_alphabet   # 变量"a"的值是另一个变量的名字. 
+letter_of_alphabet=z
+
+echo
+
+# 直接引用.
+echo "a = $a"          # a = letter_of_alphabet
+
+# 间接引用.
+eval a=\$$a
+echo $a
