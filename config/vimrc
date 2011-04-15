@@ -87,11 +87,19 @@ endif
 let &guicursor = &guicursor . ",a:blinkon0"
 
 " pwp specific
-set ts=4
-set softtabstop=4
-set expandtab
+" for kernel, set 8
+"set tabstop=8
+"set noexpandtab
+"set shiftwidth=8
+"
+" for other, set 4
+set tabstop=4
+set shiftwidth=4
 set ai
-set nonumber
+set number
+set textwidth=78
+set autoindent smartindent
+set smarttab   
 
 ab cc cerr << __FILE__ << __LINE__ << __func__ << endl;
 ab qq qDebug() <<__FILE__ << __LINE__ << __func__;

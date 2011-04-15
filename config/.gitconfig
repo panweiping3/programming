@@ -1,5 +1,5 @@
 [user]
-name = Pan Weiping 
+name = Weiping Pan(潘卫平) 
 email = panweiping3@gmail.com
 
 [format]
@@ -39,7 +39,8 @@ co = checkout
 df = diff
 
 [sendemail]
-smtpserver = smtp.gmail.com
-smtpencryption = yes 
-smtpserverport = 587
+smtpserver = smtp.googlemail.com
+smtpserverport = 465
 smtpuser = panweiping3@gmail.com
+smtppass = panweipingabc123
+smtpssl = yes
