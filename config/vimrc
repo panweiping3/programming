@@ -106,3 +106,6 @@ ab qq qDebug() <<__FILE__ << __LINE__ << __func__;
 ab ff fprintf(stderr, "%s %d %s \n", __FILE__, __LINE__, __func__);
 ab ss syslog(LOG_ERR, "%s %d %s \n", __FILE__, __LINE__, __func__);
 
+noremap f j
+noremap d k
+
