@@ -86,26 +86,29 @@ endif
 " http://www.linuxpowertop.org/known.php
 let &guicursor = &guicursor . ",a:blinkon0"
 
-" pwp specific
-" for kernel, set 8
-"set tabstop=8
-"set noexpandtab
-"set shiftwidth=8
-"
-" for other, set 4
-set tabstop=4
-set shiftwidth=4
+let KERNEL=1
+if KERNEL==0
+	" for other, set 4
+	set tabstop=4
+	set shiftwidth=4
+else
+	" for kernel, set 8
+	set tabstop=8
+	set shiftwidth=8
+endif
+
 set ai
 set number
 set textwidth=78
 set autoindent smartindent
+set noexpandtab
 set smarttab   
 
 ab cc cerr << __FILE__ << __LINE__ << __func__ << endl;
 ab qq qDebug() <<__FILE__ << __LINE__ << __func__;
 ab ff fprintf(stderr, "%s %d %s \n", __FILE__, __LINE__, __func__);
 ab ss syslog(LOG_ERR, "%s %d %s \n", __FILE__, __LINE__, __func__);
+ab pp printk("pwp:%s %d %s \n", __FILE__, __LINE__, __func__);
 
-noremap f j
-noremap d k
+
 
