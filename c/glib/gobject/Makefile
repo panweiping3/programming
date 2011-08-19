@@ -1,8 +1,8 @@
-hello:hello.c
-	cc `pkg-config --cflags --libs glib-2.0` hello.c -o hello
+boy:main.c boy.c
+	cc `pkg-config --cflags --libs glib-2.0 gobject-2.0` main.c boy.c -o boy
 
 clean:
-	rm hello hello.o -rf
+	rm boy -rf
 
 #$ pkg-config --cflags glib-2.0
 # -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include 
