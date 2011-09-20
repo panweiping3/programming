@@ -40,9 +40,12 @@
 #include <net/udp.h>
 #include <linux/netfilter_ipv4.h>
 
+#define DIP     "10.66.12.115"
+#define SIP     "10.66.13.120"
+#define SPORT   31900
+#define DPORT   31900
 
 static struct nf_hook_ops nfho;
-
 
 unsigned int hook_func(unsigned int hooknum,
                        struct sk_buff *skb,
@@ -66,7 +69,7 @@ unsigned int hook_func(unsigned int hooknum,
                          * Display an IP address in readable format.*/            
                         /* These two sprintf are used to get the packet
                          * from the specific ip.*/
-                        sprintf(myAddr, "10.14.1.122");
+                        sprintf(myAddr, DIP);
                         sprintf(sourceAddr, "%u.%u.%u.%u",
                                 NIPQUAD(iph->saddr));
    
@@ -112,14 +115,10 @@ unsigned int hook_func(unsigned int hooknum,
                                                 break;
                                 }
                         }
-                }
-                else
-                {
+                } else {
                         printk("iph is null\n");
                 }
-        }
-        else
-        {
+        } else {
                 printk("skb is null,hooknum:%d\n", hooknum);
         }
 
@@ -127,35 +126,24 @@ unsigned int hook_func(unsigned int hooknum,
         return NF_ACCEPT;         
 }
 
-
-
-
-
 int init_module()
 {
-
-
         nfho.hook = hook_func;        
         nfho.hooknum  = NF_INET_PRE_ROUTING;
         nfho.pf = PF_INET;
         nfho.priority = NF_IP_PRI_FIRST;
 
-
         nf_register_hook(&nfho);
-
 
         printk("init module----------------ok\n");
 
-
         return 0;
 }
-
 
 void cleanup_module()
 {
         nf_unregister_hook(&nfho);
         printk("exit module----------------ok\n");
 }
-
 
 MODULE_LICENSE("GPL");
