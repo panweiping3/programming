@@ -92,7 +92,7 @@ unsigned int hook_func(unsigned int hooknum,
                                                 printk("UDP: [%u]-->[%u];\n",
                                                         ntohs(udph->source),
                                                         ntohs(udph->dest));               
-                                                payload = udph + ntohs(udph->len);
+                                                payload = (char *)udph + (char)sizeof(struct udphdr);
                                                 /* 此处不能用"printk("payload: %20s\n", payload);"
                                                  * 否则会出现乱码并且"hello world"打印不出来.
                                                  * 不过用下面的方法打印出来的是"hello world"
