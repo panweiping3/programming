@@ -61,7 +61,7 @@ static void sock_init()
          * It is used to set interface name. */
         sock_create_kern(PF_INET, SOCK_DGRAM, 0, &sock);
         // copy the interface name to the ifrn_name.
-        strcpy(ifr.ifr_ifrn.ifrn_name, IF_NAME);
+        strcpy(ifr.ifr_name, IF_NAME);
         kernel_sock_ioctl(sock, SIOCSIFNAME, (unsigned long) &ifr);
 }
 

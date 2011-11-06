@@ -1,0 +1,5 @@
+#! /bin/sh
+
+console -l wpan -M console.lab.bos.redhat.com $1
+
+#jburke-privateswitch.lab.bos.redhat.com
