@@ -42,6 +42,8 @@ int main(void)
 {
 	unsigned short p = SPEED_UNKNOWN;
 	printf("unsigned short p sizeof(p) = %d\n", sizeof(p));
+	printf("unsigned short p = %u\n", p);
+	printf("unsigned short p = %u\n", SPEED_UNKNOWN);
 	if (p == SPEED_UNKNOWN )
 		printf("p == SPEED_UNKNOWN\n");
 	else
@@ -61,6 +63,7 @@ int main(void)
 {
 	unsigned int p = SPEED_UNKNOWN;
 	printf("unsigned int p sizeof(p) = %d\n", sizeof(p));
+	printf("unsigned int p sizeof(p) = %u\n", p);
 	if (p == SPEED_UNKNOWN )
 		printf("p == SPEED_UNKNOWN\n");
 	else

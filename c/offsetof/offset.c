@@ -25,6 +25,12 @@ struct ST_TEST {
     int member;
 };
 
+struct A  
+{  
+    int a;  
+    int b;         
+};  
+
 int main()
 {
     struct ST_TEST stTemp;
@@ -47,6 +53,22 @@ int main()
     struct ST_TEST *p = (struct ST_TEST*)container_of(addMem, struct ST_TEST, member);
     fprintf(stderr, "%s %d %s &stTemp=%x\n", __FILE__, __LINE__, __func__, p);
 
+    struct A m;  
+    printf("address of b 0x%x\n", (unsigned int)&(m.b));  
+    printf("address of container m 0x%x\n", (unsigned int)&m);  
+    printf("address of container m caculate from member b 0x%x\n", 
+    		(unsigned int)container_of(&(m.b), struct A, b));  
+
+    // if type of ptr != type->member, 
+    // warining
+    char *pp = (char *)&m.b;
+    printf("address of container m caculate from member b 0x%x\n", 
+    		(unsigned int)container_of(pp, struct A, b));  
+
+    // if type doesn't have member
+    // error
+    printf("address of container m caculate from member b 0x%x\n", 
+    		(unsigned int)container_of(&(m.b), struct A, c));  
     return 0;
 }
 
