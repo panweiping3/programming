@@ -42,8 +42,6 @@
 
 #define DIP     "10.66.12.115"
 #define SIP     "10.66.13.120"
-#define SPORT   31900
-#define DPORT   31900
 
 static struct nf_hook_ops nfho;
 
@@ -53,7 +51,7 @@ unsigned int hook_func(unsigned int hooknum,
                        const struct net_device *out,
                        int (*okfn)(struct sk_buff *))
 {
-        if(skb){
+        if(skb) {
                 struct sk_buff *sb = skb;
                 struct tcphdr *tcph = NULL;
                 struct udphdr *udph = NULL;
@@ -62,18 +60,16 @@ unsigned int hook_func(unsigned int hooknum,
                 char sourceAddr[20];
                 char myAddr[20];
 
-
                 iph = ip_hdr(sb);
-                if(iph){
+                if(iph) {
                         /* NIPQUAD() was defined in the linux/kernel.h.
                          * Display an IP address in readable format.*/            
                         /* These two sprintf are used to get the packet
                          * from the specific ip.*/
-                        sprintf(myAddr, DIP);
-                        sprintf(sourceAddr, "%u.%u.%u.%u",
-                                NIPQUAD(iph->saddr));
-   
-                        if(!(strcmp(sourceAddr, myAddr))){
+                        sprintf(myAddr, SIP);
+                        sprintf(sourceAddr, "%u.%u.%u.%u", NIPQUAD(iph->saddr));
+
+                        if (!(strcmp(sourceAddr, myAddr))) {
                                 printk("IP:[%u.%u.%u.%u]-->[%u.%u.%u.%u];\n",
                                         NIPQUAD(iph->saddr), NIPQUAD(iph->daddr));
                                 printk("IP (version %u, ihl %u, tos 0x%x, ttl %u, id %u, length %u, ",
@@ -85,43 +81,33 @@ unsigned int hook_func(unsigned int hooknum,
                                  * 所以不能直接访问skbuff中的传输层协议头指针，而必
                                  * 须用skb->data+iph->ihl*4来得到指向传输层头部的指
                                  * 针。 */
-                                switch(iph->protocol){
-                                        case IPPROTO_UDP:
-                                                /*get the udp information*/
-                                                udph = (struct udphdr *)(sb->data + iph->ihl*4);
-                                                printk("UDP: [%u]-->[%u];\n",
-                                                        ntohs(udph->source),
-                                                        ntohs(udph->dest));               
-                                                payload = (char *)udph + (char)sizeof(struct udphdr);
-                                                /* 此处不能用"printk("payload: %20s\n", payload);"
-                                                 * 否则会出现乱码并且"hello world"打印不出来.
-                                                 * 不过用下面的方法打印出来的是"hello world"
-                                                 * 前面有一些乱码. */
-                                                char i;
-                                                for(i=0;i<20;i++){
-                                                        printk("%c", payload[i]);
-                                                }
-                                                break;
-                                        case IPPROTO_TCP:
-                                                /*get the tcp header*/
-                                                tcph = sb->data + iph->ihl*4;
-                                                //payload = (char *)((__u32 *)tcph+tcph->doff);
-                                                printk("TCP: [%u]-->[%u];\n",
-                                                        ntohs(tcph->source),
-                                                        ntohs(tcph->dest));
-                                                break;
-                                        default:
-                                                printk("unkown protocol!\n");
-                                                break;
+                                switch (iph->protocol) {
+                                case IPPROTO_UDP:
+                                        /*get the udp information*/
+                                        udph = (struct udphdr *)(sb->data + iph->ihl*4);
+                                        printk("UDP: [%u]-->[%u];\n", ntohs(udph->source), ntohs(udph->dest));    
+                                        payload = (char *)udph + (char)sizeof(struct udphdr);
+                                        /* 此处不能用"printk("payload: %20s\n", payload);"
+                                         * 否则会出现乱码并且"hello world"打印不出来.
+                                         * 不过用下面的方法打印出来的是"hello world"
+                                         * 前面有一些乱码. */
+                                        printk("\n%s\n", payload);
+                                        break;
+                                case IPPROTO_TCP:
+                                        /*get the tcp header*/
+                                        tcph = sb->data + iph->ihl*4;
+                                        //payload = (char *)((__u32 *)tcph+tcph->doff);
+                                        printk("TCP: [%u]-->[%u];\n", ntohs(tcph->source), ntohs(tcph->dest));
+                                        break;
+                                default:
+                                        printk("unkown protocol!\n");
+                                        break;
                                 }
                         }
-                } else {
+                } else
                         printk("iph is null\n");
-                }
-        } else {
+        } else
                 printk("skb is null,hooknum:%d\n", hooknum);
-        }
-
 
         return NF_ACCEPT;         
 }
