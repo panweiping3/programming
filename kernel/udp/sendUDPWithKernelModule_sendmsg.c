@@ -16,7 +16,7 @@
 
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("tingw.liu@gmail.com");
-char *sendstring="test string";
+char *sendstring="pwp test string";
 char *dip="10.66.12.115";
 unsigned short dport=31900;
 module_param(sendstring,charp,0644);
@@ -24,6 +24,7 @@ module_param(dip,charp,0644);
 module_param(dport,ushort,0644);
 struct sockaddr_in recvaddr;
 struct socket *sock;
+
 static int send_msg(struct socket *sock, char *buffer, size_t length)
 {
         struct msghdr        msg;
@@ -39,7 +40,6 @@ static int send_msg(struct socket *sock, char *buffer, size_t length)
         iov.iov_base     = (void *)buffer;
         iov.iov_len      = length;
 
-
         len = kernel_sendmsg(sock, &msg, &iov, 1, length);
         return len;
 }
@@ -52,6 +52,7 @@ static void make_daddr()
         recvaddr.sin_port = htons(dport);
         recvaddr.sin_addr.s_addr = in_aton(dip);
 }
+
 static void make_socket(void)
 {
         if(sock_create_kern(PF_INET, SOCK_DGRAM, IPPROTO_UDP, &sock) < 0){
@@ -70,20 +71,26 @@ static void make_socket(void)
         sock = NULL;
         return;
 }
+
 static int __init send_udp_init(void)
 {
+        make_daddr();
         make_socket();
         if(sock == NULL)
-                 return -1;
-        make_daddr();
+		return -1;
+
+	printk("send_udp_init ok\n");
         send_msg(sock,sendstring,strlen(sendstring));
         return 0;
 }
+
 static void __exit send_udp_exit(void)
 {
         if(sock)
                 sock_release(sock);
+	printk("send_udp_exit ok\n");
         return;
 }
+
 module_init(send_udp_init);
 module_exit(send_udp_exit);
