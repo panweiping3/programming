@@ -44,4 +44,4 @@ smtpserver = smtp.corp.redhat.com
 smtppass = PANWEIPING3@163.com
 smtpssl = no
 confirm = never
-chainreplyto = yes
+chainreplyto = false
