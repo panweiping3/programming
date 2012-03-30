@@ -1,0 +1,9 @@
+#! /usr/bin/expect
+
+set machine [lindex $argv 0]
+spawn /usr/bin/ssh -l root $machine
+expect "root@$machine's password:"
+send "redhat\r" 
+interact
+
+#jburke-privateswitch.lab.bos.redhat.com
