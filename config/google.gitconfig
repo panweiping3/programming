@@ -45,3 +45,6 @@ smtpserverport = 465
 smtpuser = panweiping3@gmail.com
 smtppass = panweipingabc123
 smtpssl = yes
+
+[diff]
+renames = false

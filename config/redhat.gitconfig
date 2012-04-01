@@ -45,3 +45,6 @@ smtppass = PANWEIPING3@163.com
 smtpssl = no
 confirm = never
 chainreplyto = false
+
+[diff]
+renames = false
