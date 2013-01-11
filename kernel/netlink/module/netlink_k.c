@@ -80,7 +80,7 @@ int netlink_init(void)
 static void netlink_exit(void)
 {
     if(nl_sk != NULL){
-        sock_release(nl_sk->sk_socket);
+	netlink_kernel_release(nl_sk);
     }
 
     printk("pwp_net_link: module exit\n");
