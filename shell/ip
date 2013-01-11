@@ -31,6 +31,7 @@ function ip2num()
     echo "d="$d
  
 	echo "$(((d<<24)+(c<<16)+(b<<8)+a))"
+	echo `printf "0x%08x" $(((d<<24)+(c<<16)+(b<<8)+a))`
 }
  
 if [ "$1" = "-i" ]
