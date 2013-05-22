@@ -93,9 +93,10 @@ int main(int argc, char **argv)
 
 	while (1)
 	{
+		sleep(1);
 		bzero(buf, BUFFER_SIZE);
 		printf("please input message: ");
-		gets(buf);
+		fgets(buf, BUFFER_SIZE, STDIN_FILENO);
 		if (send(client_fd, buf, BUFFER_SIZE, 0) < 0)
 		{
 			fprintf(stderr, "send message error\n");

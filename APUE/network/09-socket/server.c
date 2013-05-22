@@ -17,6 +17,8 @@
 #include <string.h>
 #include <pthread.h>
 #include <time.h>
+#include <linux/if.h>
+#include <errno.h>
 
 #define SERVER_PORT 20000 // define the defualt connect port id
 #define LENGTH_OF_LISTEN_QUEUE 10 //length of listen queue in server
@@ -58,6 +60,15 @@ int main(int argc, char **argv)
 	int server_fd,client_fd;
 	struct sockaddr_in servaddr;
 	struct sockaddr_in client_addr;
+	struct ifreq interface;
+	socklen_t ifreq_len = sizeof(interface);
+	int index;
+
+	if (argc != 2) {
+		printf("./a.out interface_name\n");
+		exit(1);
+	}
+	strncpy(interface.ifr_name, argv[1], IFNAMSIZ);
 
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 	{
@@ -77,7 +88,24 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	if (listen(server_fd, LENGTH_OF_LISTEN_QUEUE) < 0)
+#if 0
+	if (setsockopt(server_fd, SOL_SOCKET, SO_BINDTODEVICE,(char *)&interface, sizeof(interface)) < 0) {
+		close(server_fd);
+		printf("setsockopt SO_BINDTODEVICE error!\n");
+		return -1;
+	}
+	errno = 0;
+	if ((index = getsockopt(server_fd, SOL_SOCKET, SO_BINDTODEVICE, (char *)&interface, &ifreq_len)) < 0) {
+		close(server_fd);
+		perror("getsockopt SO_BINDTODEVICE error!\n");
+		printf("interface index=%d\n", index);
+		return -1;
+	}
+	printf("interface index=%d\n", index);
+#endif
+
+	//if (listen(server_fd, LENGTH_OF_LISTEN_QUEUE) < 0)
+	if (listen(server_fd, -1) < 0)
 	{
 		printf("call listen failure!\n");
 		exit(1);
