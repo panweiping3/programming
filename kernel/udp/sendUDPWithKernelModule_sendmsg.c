@@ -17,7 +17,7 @@
 MODULE_LICENSE("GPL");
 MODULE_AUTHOR("tingw.liu@gmail.com");
 char *sendstring="pwp test string";
-char *dip="10.66.12.115";
+char *dip="10.66.16.141";
 unsigned short dport=31900;
 module_param(sendstring,charp,0644);
 module_param(dip,charp,0644);

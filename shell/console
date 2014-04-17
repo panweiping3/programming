@@ -2,7 +2,8 @@
 
 set machine [lindex $argv 0]
 spawn console -l wpan -M console.lab.bos.redhat.com $machine 
-expect "Enter wpan@conserver-01.eng.bos.redhat.com's password:"
+#expect "Enter wpan@conserver-01.eng.bos.redhat.com's password:"
+expect "*.eng.bos.redhat.com's password:"
 send "PANWEIPING3\@163\.com\r" 
 interact
 

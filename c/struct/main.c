@@ -6,10 +6,6 @@ struct s{
 	void *offset;
 	char UUID[40];
 	char HOST[40];
-	void pp (void)
-	{
-		fprintf(stderr, "%s %d %s \n", __FILE__, __LINE__, __func__);		
-	}
 };
 
 void p(struct s *s_t)
@@ -23,10 +19,13 @@ void p(struct s *s_t)
 int main(int argc, char *argv[])
 {
     struct s s_t;
+    struct s *s_t_p = &s_t;
+
+    printf("sizeof=%d\n", sizeof(s_t_p));
 	
 	p(&s_t);
 
-	s_t.pp();
+//	s_t.pp();
 
     return 0;
 }

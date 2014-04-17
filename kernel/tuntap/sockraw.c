@@ -46,6 +46,7 @@ int main(int argc, char *argv[])
 	        else {
 	        	fprintf(stderr, "recv %d bytes\n", n);
 	        	fwrite(buf, n, 1, stdout);
+	        	fprintf(stderr, "\n");
 	        	fflush(stdout);
 	        }
 	}

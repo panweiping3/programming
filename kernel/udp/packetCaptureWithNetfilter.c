@@ -40,8 +40,7 @@
 #include <net/udp.h>
 #include <linux/netfilter_ipv4.h>
 
-#define DIP     "10.66.12.115"
-#define SIP     "10.66.13.120"
+#define SIP     "10.66.16.141"
 
 static struct nf_hook_ops nfho;
 

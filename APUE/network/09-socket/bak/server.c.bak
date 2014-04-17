@@ -19,7 +19,7 @@
 #include <time.h>
 
 #define SERVER_PORT 20000 // define the defualt connect port id
-#define LENGTH_OF_LISTEN_QUEUE 10 //length of listen queue in server
+#define LENGTH_OF_LISTEN_QUEUE 1 //length of listen queue in server
 #define BUFFER_SIZE 255
 #define WELCOME_MESSAGE "welcome to connect the server. "
 void *thread(void *client_fd)
@@ -31,21 +31,18 @@ void *thread(void *client_fd)
 	{	
 		bzero(buf, BUFFER_SIZE);
 
-		if (recv((*(int *)client_fd), buf, BUFFER_SIZE, 0) < 0)
-		{
+		if (recv((*(int *)client_fd), buf, BUFFER_SIZE, 0) < 0) {
 			fprintf(stderr, "get message from client error\n");	
 		}
 
-		if (strcmp(buf, "q") != 0)
-		{
+		sleep(1);
+		if (strcmp(buf, "q") != 0) {
 			strcat(buf, " : ");
 			timestamp = time(NULL);
 			strcat(buf, ctime(&timestamp));
 			puts(buf);
 			send((*(int *)client_fd), buf, BUFFER_SIZE, 0);
-		}
-		else 
-		{
+		} else {
 			puts("a client quit");
 			close((*(int *)client_fd));          
 		}
@@ -82,9 +79,11 @@ int main(int argc, char **argv)
 		printf("call listen failure!\n");
 		exit(1);
 	}
-
-	printf("server is listening....\n");
-
+	for (;;) {
+		printf("server is listening! \n");
+		sleep(1);
+	}
+	printf("server is listening! \n");
 	while (1)
 	{
 		char buf[BUFFER_SIZE] = {'\0'};
@@ -92,13 +91,10 @@ int main(int argc, char **argv)
 		socklen_t length = sizeof(client_addr);
 
 		client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &length);
-		if (client_fd < 0)
-		{
+		if (client_fd < 0) {
 			printf("error comes when call accept!\n");
 			break;
-		}
-		else	
-		{
+		} else	{
 			printf("a client connected: IP %s PORT %d\n", inet_ntoa(client_addr.sin_addr), ntohs(client_addr.sin_port));	
 		}
 

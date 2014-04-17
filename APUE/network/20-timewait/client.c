@@ -13,7 +13,6 @@
 #include <netinet/in.h>
 #include <stdlib.h>
 #include <string.h>
-#include <pthread.h>
 
 #define SERVER_PORT 20000 // define the defualt connect port id
 #define CLIENT_PORT ((20001+rand()) % 65536) // define the defualt client port as a random port
@@ -25,28 +24,10 @@ void usage(char *name)
 	printf("usage: %s Ip Addr\n", name);
 }
 
-void *thread(void *client_fd)
-{
-	char buf[BUFFER_SIZE];
-	int length;
-
-	while (1)
-	{
-		length = recv(*((int *)client_fd), buf, BUFFER_SIZE, 0);
-		if (length < 0)
-		{
-			printf("error comes when recieve data from server !");
-			close(*(int *)client_fd);
-			exit(1);
-		}
-		fprintf(stderr, "from server: %s \n", buf);
-	}
-}
-
 int main(int argc, char **argv)
 {    
 	pthread_t thread_id;
-	int server_fd, client_fd, length = 0;
+	int client_fd, length = 0;
 	struct sockaddr_in server_addr,client_addr;
 
 	socklen_t socklen = sizeof(server_addr);
@@ -80,29 +61,21 @@ int main(int argc, char **argv)
 		printf("can't connect to %s!\n",argv[1]);
 		exit(1);
 	}
-	else
-	{
-		printf("connected to server: IP %s PORT %d\n", inet_ntoa(server_addr.sin_addr), ntohs(server_addr.sin_port));
-
-		if (pthread_create(&thread_id, NULL, thread, (void *)&client_fd) < 0)
-		{
-			fprintf(stderr, "create thread error\n");
-			exit(1);
-		}
-	}
 
 	while (1)
 	{
-		bzero(buf, BUFFER_SIZE);
-		printf("please input message: ");
-		gets(buf);
-		if (send(client_fd, buf, BUFFER_SIZE, 0) < 0)
-		{
-			fprintf(stderr, "send message error\n");
+		int size = 0;
+		sleep(1);
+		memset(buf, 'a', BUFFER_SIZE);
+		size = recv(client_fd, buf, BUFFER_SIZE, 0);
+
+		if (size <= 0){
+			close (client_fd);
+			break;
+		} else {
+			printf("size=%d\n", size);
 		}
 	}
-
-	close(client_fd);
 
 	return 0;
 
