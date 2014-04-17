@@ -1,0 +1,29 @@
+commit 67da22d23fa6f3324e03bcd0580b914b2e4afbf3
+Author: Yuchung Cheng <ycheng@google.com>
+
+    net-tcp: Fast Open client - cookie-less mode
+
+commit aab4874355679c70f93993cf3b3fd74643b9ac33
+Author: Yuchung Cheng <ycheng@google.com>
+
+    net-tcp: Fast Open client - detecting SYN-data drops
+
+commit cf60af03ca4e71134206809ea892e49b92a88896
+Author: Yuchung Cheng <ycheng@google.com>
+
+    net-tcp: Fast Open client - sendmsg(MSG_FASTOPEN)
+
+commit 8e4178c1c7b52f7c99f5fd22ef7af6b2bff409e3
+Author: Yuchung Cheng <ycheng@google.com>
+
+    net-tcp: Fast Open client - receiving SYN-ACK
+
+commit 783237e8daf13481ee234997cbbbb823872ac388
+Author: Yuchung Cheng <ycheng@google.com>
+
+    net-tcp: Fast Open client - sending SYN-data
+
+commit 1fe4c481ba637660793217769695c146a037bd54
+Author: Yuchung Cheng <ycheng@google.com>
+
+    net-tcp: Fast Open client - cookie cache

@@ -1,0 +1,116 @@
+commit 67da22d23fa6f3324e03bcd0580b914b2e4afbf3
+Author: Yuchung Cheng <ycheng@google.com>
+Date:   Thu Jul 19 06:43:11 2012 +0000
+
+    net-tcp: Fast Open client - cookie-less mode
+    
+    In trusted networks, e.g., intranet, data-center, the client does not
+    need to use Fast Open cookie to mitigate DoS attacks. In cookie-less
+    mode, sendmsg() with MSG_FASTOPEN flag will send SYN-data regardless
+    of cookie availability.
+    
+    Signed-off-by: Yuchung Cheng <ycheng@google.com>
+    Acked-by: Eric Dumazet <edumazet@google.com>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
+
+diff --git a/Documentation/networking/ip-sysctl.txt b/Documentation/networking/ip-sysctl.txt
+index 03964e0..5f3ef7f 100644
+--- a/Documentation/networking/ip-sysctl.txt
++++ b/Documentation/networking/ip-sysctl.txt
+@@ -476,6 +476,8 @@ tcp_fastopen - INTEGER
+ 
+ 	The values (bitmap) are:
+ 	1: Enables sending data in the opening SYN on the client
++	5: Enables sending data in the opening SYN on the client regardless
++	   of cookie availability.
+ 
+ 	Default: 0
+ 
+diff --git a/include/linux/tcp.h b/include/linux/tcp.h
+index 1edf96a..9febfb6 100644
+--- a/include/linux/tcp.h
++++ b/include/linux/tcp.h
+@@ -387,6 +387,7 @@ struct tcp_sock {
+ 	u8	repair_queue;
+ 	u8	do_early_retrans:1,/* Enable RFC5827 early-retransmit  */
+ 		early_retrans_delayed:1, /* Delayed ER timer installed */
++		syn_data:1,	/* SYN includes data */
+ 		syn_fastopen:1;	/* SYN includes Fast Open option */
+ 
+ /* RTT measurement */
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index e07878d..bc7c134 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -214,6 +214,7 @@ extern void tcp_time_wait(struct sock *sk, int state, int timeo);
+ 
+ /* Bit Flags for sysctl_tcp_fastopen */
+ #define	TFO_CLIENT_ENABLE	1
++#define	TFO_CLIENT_NO_COOKIE	4	/* Data in SYN w/o cookie option */
+ 
+ extern struct inet_timewait_death_row tcp_death_row;
+ 
+diff --git a/net/ipv4/tcp_input.c b/net/ipv4/tcp_input.c
+index c49a4fc..e67d685 100644
+--- a/net/ipv4/tcp_input.c
++++ b/net/ipv4/tcp_input.c
+@@ -5650,7 +5650,7 @@ static bool tcp_rcv_fastopen_synack(struct sock *sk, struct sk_buff *synack,
+ 				    struct tcp_fastopen_cookie *cookie)
+ {
+ 	struct tcp_sock *tp = tcp_sk(sk);
+-	struct sk_buff *data = tcp_write_queue_head(sk);
++	struct sk_buff *data = tp->syn_data ? tcp_write_queue_head(sk) : NULL;
+ 	u16 mss = tp->rx_opt.mss_clamp;
+ 	bool syn_drop;
+ 
+@@ -5665,6 +5665,9 @@ static bool tcp_rcv_fastopen_synack(struct sock *sk, struct sk_buff *synack,
+ 		mss = opt.mss_clamp;
+ 	}
+ 
++	if (!tp->syn_fastopen)  /* Ignore an unsolicited cookie */
++		cookie->len = -1;
++
+ 	/* The SYN-ACK neither has cookie nor acknowledges the data. Presumably
+ 	 * the remote receives only the retransmitted (regular) SYNs: either
+ 	 * the original SYN-data or the corresponding SYN-ACK is lost.
+@@ -5816,7 +5819,8 @@ static int tcp_rcv_synsent_state_process(struct sock *sk, struct sk_buff *skb,
+ 
+ 		tcp_finish_connect(sk, skb);
+ 
+-		if (tp->syn_fastopen && tcp_rcv_fastopen_synack(sk, skb, &foc))
++		if ((tp->syn_fastopen || tp->syn_data) &&
++		    tcp_rcv_fastopen_synack(sk, skb, &foc))
+ 			return -1;
+ 
+ 		if (sk->sk_write_pending ||
+diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+index c5cfd5e..27a32ac 100644
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -2864,6 +2864,7 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
+ 	struct sk_buff *syn_data = NULL, *data;
+ 	unsigned long last_syn_loss = 0;
+ 
++	tp->rx_opt.mss_clamp = tp->advmss;  /* If MSS is not cached */
+ 	tcp_fastopen_cache_get(sk, &tp->rx_opt.mss_clamp, &fo->cookie,
+ 			       &syn_loss, &last_syn_loss);
+ 	/* Recurring FO SYN losses: revert to regular handshake temporarily */
+@@ -2873,7 +2874,9 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
+ 		goto fallback;
+ 	}
+ 
+-	if (fo->cookie.len <= 0)
++	if (sysctl_tcp_fastopen & TFO_CLIENT_NO_COOKIE)
++		fo->cookie.len = -1;
++	else if (fo->cookie.len <= 0)
+ 		goto fallback;
+ 
+ 	/* MSS for SYN-data is based on cached MSS and bounded by PMTU and
+@@ -2916,6 +2919,7 @@ static int tcp_send_syn_data(struct sock *sk, struct sk_buff *syn)
+ 	fo->copied = data->len;
+ 
+ 	if (tcp_transmit_skb(sk, syn_data, 0, sk->sk_allocation) == 0) {
++		tp->syn_data = (fo->copied > 0);
+ 		NET_INC_STATS(sock_net(sk), LINUX_MIB_TCPFASTOPENACTIVE);
+ 		goto done;
+ 	}

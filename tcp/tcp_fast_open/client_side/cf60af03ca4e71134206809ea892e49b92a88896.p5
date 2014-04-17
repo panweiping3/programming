@@ -1,0 +1,277 @@
+commit cf60af03ca4e71134206809ea892e49b92a88896
+Author: Yuchung Cheng <ycheng@google.com>
+Date:   Thu Jul 19 06:43:09 2012 +0000
+
+    net-tcp: Fast Open client - sendmsg(MSG_FASTOPEN)
+    
+    sendmsg() (or sendto()) with MSG_FASTOPEN is a combo of connect(2)
+    and write(2). The application should replace connect() with it to
+    send data in the opening SYN packet.
+    
+    For blocking socket, sendmsg() blocks until all the data are buffered
+    locally and the handshake is completed like connect() call. It
+    returns similar errno like connect() if the TCP handshake fails.
+    
+    For non-blocking socket, it returns the number of bytes queued (and
+    transmitted in the SYN-data packet) if cookie is available. If cookie
+    is not available, it transmits a data-less SYN packet with Fast Open
+    cookie request option and returns -EINPROGRESS like connect().
+    
+    Using MSG_FASTOPEN on connecting or connected socket will result in
+    simlar errno like repeating connect() calls. Therefore the application
+    should only use this flag on new sockets.
+    
+    The buffer size of sendmsg() is independent of the MSS of the connection.
+    
+    Signed-off-by: Yuchung Cheng <ycheng@google.com>
+    Acked-by: Eric Dumazet <edumazet@google.com>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
+
+diff --git a/Documentation/networking/ip-sysctl.txt b/Documentation/networking/ip-sysctl.txt
+index e1e0215..03964e0 100644
+--- a/Documentation/networking/ip-sysctl.txt
++++ b/Documentation/networking/ip-sysctl.txt
+@@ -468,6 +468,17 @@ tcp_syncookies - BOOLEAN
+ 	SYN flood warnings in logs not being really flooded, your server
+ 	is seriously misconfigured.
+ 
++tcp_fastopen - INTEGER
++	Enable TCP Fast Open feature (draft-ietf-tcpm-fastopen) to send data
++	in the opening SYN packet. To use this feature, the client application
++	must not use connect(). Instead, it should use sendmsg() or sendto()
++	with MSG_FASTOPEN flag which performs a TCP handshake automatically.
++
++	The values (bitmap) are:
++	1: Enables sending data in the opening SYN on the client
++
++	Default: 0
++
+ tcp_syn_retries - INTEGER
+ 	Number of times initial SYNs for an active TCP connection attempt
+ 	will be retransmitted. Should not be higher than 255. Default value
+diff --git a/include/linux/socket.h b/include/linux/socket.h
+index 25d6322..ba7b2e8 100644
+--- a/include/linux/socket.h
++++ b/include/linux/socket.h
+@@ -268,6 +268,7 @@ struct ucred {
+ #define MSG_SENDPAGE_NOTLAST 0x20000 /* sendpage() internal : not the last page */
+ #define MSG_EOF         MSG_FIN
+ 
++#define MSG_FASTOPEN	0x20000000	/* Send data in TCP SYN */
+ #define MSG_CMSG_CLOEXEC 0x40000000	/* Set close_on_exit for file
+ 					   descriptor received through
+ 					   SCM_RIGHTS */
+diff --git a/include/net/inet_common.h b/include/net/inet_common.h
+index 22fac98..2340087 100644
+--- a/include/net/inet_common.h
++++ b/include/net/inet_common.h
+@@ -14,9 +14,11 @@ struct sockaddr;
+ struct socket;
+ 
+ extern int inet_release(struct socket *sock);
+-extern int inet_stream_connect(struct socket *sock, struct sockaddr * uaddr,
++extern int inet_stream_connect(struct socket *sock, struct sockaddr *uaddr,
+ 			       int addr_len, int flags);
+-extern int inet_dgram_connect(struct socket *sock, struct sockaddr * uaddr,
++extern int __inet_stream_connect(struct socket *sock, struct sockaddr *uaddr,
++				 int addr_len, int flags);
++extern int inet_dgram_connect(struct socket *sock, struct sockaddr *uaddr,
+ 			      int addr_len, int flags);
+ extern int inet_accept(struct socket *sock, struct socket *newsock, int flags);
+ extern int inet_sendmsg(struct kiocb *iocb, struct socket *sock,
+diff --git a/include/net/tcp.h b/include/net/tcp.h
+index 867557b..c025810 100644
+--- a/include/net/tcp.h
++++ b/include/net/tcp.h
+@@ -212,6 +212,9 @@ extern void tcp_time_wait(struct sock *sk, int state, int timeo);
+ /* TCP initial congestion window as per draft-hkchu-tcpm-initcwnd-01 */
+ #define TCP_INIT_CWND		10
+ 
++/* Bit Flags for sysctl_tcp_fastopen */
++#define	TFO_CLIENT_ENABLE	1
++
+ extern struct inet_timewait_death_row tcp_death_row;
+ 
+ /* sysctl variables for tcp */
+diff --git a/net/ipv4/af_inet.c b/net/ipv4/af_inet.c
+index edc4146..fe4582c 100644
+--- a/net/ipv4/af_inet.c
++++ b/net/ipv4/af_inet.c
+@@ -585,8 +585,8 @@ static long inet_wait_for_connect(struct sock *sk, long timeo, int writebias)
+  *	Connect to a remote host. There is regrettably still a little
+  *	TCP 'magic' in here.
+  */
+-int inet_stream_connect(struct socket *sock, struct sockaddr *uaddr,
+-			int addr_len, int flags)
++int __inet_stream_connect(struct socket *sock, struct sockaddr *uaddr,
++			  int addr_len, int flags)
+ {
+ 	struct sock *sk = sock->sk;
+ 	int err;
+@@ -595,8 +595,6 @@ int inet_stream_connect(struct socket *sock, struct sockaddr *uaddr,
+ 	if (addr_len < sizeof(uaddr->sa_family))
+ 		return -EINVAL;
+ 
+-	lock_sock(sk);
+-
+ 	if (uaddr->sa_family == AF_UNSPEC) {
+ 		err = sk->sk_prot->disconnect(sk, flags);
+ 		sock->state = err ? SS_DISCONNECTING : SS_UNCONNECTED;
+@@ -663,7 +661,6 @@ int inet_stream_connect(struct socket *sock, struct sockaddr *uaddr,
+ 	sock->state = SS_CONNECTED;
+ 	err = 0;
+ out:
+-	release_sock(sk);
+ 	return err;
+ 
+ sock_error:
+@@ -673,6 +670,18 @@ sock_error:
+ 		sock->state = SS_DISCONNECTING;
+ 	goto out;
+ }
++EXPORT_SYMBOL(__inet_stream_connect);
++
++int inet_stream_connect(struct socket *sock, struct sockaddr *uaddr,
++			int addr_len, int flags)
++{
++	int err;
++
++	lock_sock(sock->sk);
++	err = __inet_stream_connect(sock, uaddr, addr_len, flags);
++	release_sock(sock->sk);
++	return err;
++}
+ EXPORT_SYMBOL(inet_stream_connect);
+ 
+ /*
+diff --git a/net/ipv4/tcp.c b/net/ipv4/tcp.c
+index 4252cd8..581ecf0 100644
+--- a/net/ipv4/tcp.c
++++ b/net/ipv4/tcp.c
+@@ -270,6 +270,7 @@
+ #include <linux/slab.h>
+ 
+ #include <net/icmp.h>
++#include <net/inet_common.h>
+ #include <net/tcp.h>
+ #include <net/xfrm.h>
+ #include <net/ip.h>
+@@ -982,26 +983,67 @@ static inline int select_size(const struct sock *sk, bool sg)
+ 	return tmp;
+ }
+ 
++void tcp_free_fastopen_req(struct tcp_sock *tp)
++{
++	if (tp->fastopen_req != NULL) {
++		kfree(tp->fastopen_req);
++		tp->fastopen_req = NULL;
++	}
++}
++
++static int tcp_sendmsg_fastopen(struct sock *sk, struct msghdr *msg, int *size)
++{
++	struct tcp_sock *tp = tcp_sk(sk);
++	int err, flags;
++
++	if (!(sysctl_tcp_fastopen & TFO_CLIENT_ENABLE))
++		return -EOPNOTSUPP;
++	if (tp->fastopen_req != NULL)
++		return -EALREADY; /* Another Fast Open is in progress */
++
++	tp->fastopen_req = kzalloc(sizeof(struct tcp_fastopen_request),
++				   sk->sk_allocation);
++	if (unlikely(tp->fastopen_req == NULL))
++		return -ENOBUFS;
++	tp->fastopen_req->data = msg;
++
++	flags = (msg->msg_flags & MSG_DONTWAIT) ? O_NONBLOCK : 0;
++	err = __inet_stream_connect(sk->sk_socket, msg->msg_name,
++				    msg->msg_namelen, flags);
++	*size = tp->fastopen_req->copied;
++	tcp_free_fastopen_req(tp);
++	return err;
++}
++
+ int tcp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
+ 		size_t size)
+ {
+ 	struct iovec *iov;
+ 	struct tcp_sock *tp = tcp_sk(sk);
+ 	struct sk_buff *skb;
+-	int iovlen, flags, err, copied;
+-	int mss_now = 0, size_goal;
++	int iovlen, flags, err, copied = 0;
++	int mss_now = 0, size_goal, copied_syn = 0, offset = 0;
+ 	bool sg;
+ 	long timeo;
+ 
+ 	lock_sock(sk);
+ 
+ 	flags = msg->msg_flags;
++	if (flags & MSG_FASTOPEN) {
++		err = tcp_sendmsg_fastopen(sk, msg, &copied_syn);
++		if (err == -EINPROGRESS && copied_syn > 0)
++			goto out;
++		else if (err)
++			goto out_err;
++		offset = copied_syn;
++	}
++
+ 	timeo = sock_sndtimeo(sk, flags & MSG_DONTWAIT);
+ 
+ 	/* Wait for a connection to finish. */
+ 	if ((1 << sk->sk_state) & ~(TCPF_ESTABLISHED | TCPF_CLOSE_WAIT))
+ 		if ((err = sk_stream_wait_connect(sk, &timeo)) != 0)
+-			goto out_err;
++			goto do_error;
+ 
+ 	if (unlikely(tp->repair)) {
+ 		if (tp->repair_queue == TCP_RECV_QUEUE) {
+@@ -1037,6 +1079,15 @@ int tcp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
+ 		unsigned char __user *from = iov->iov_base;
+ 
+ 		iov++;
++		if (unlikely(offset > 0)) {  /* Skip bytes copied in SYN */
++			if (offset >= seglen) {
++				offset -= seglen;
++				continue;
++			}
++			seglen -= offset;
++			from += offset;
++			offset = 0;
++		}
+ 
+ 		while (seglen > 0) {
+ 			int copy = 0;
+@@ -1199,7 +1250,7 @@ out:
+ 	if (copied && likely(!tp->repair))
+ 		tcp_push(sk, flags, mss_now, tp->nonagle);
+ 	release_sock(sk);
+-	return copied;
++	return copied + copied_syn;
+ 
+ do_fault:
+ 	if (!skb->len) {
+@@ -1212,7 +1263,7 @@ do_fault:
+ 	}
+ 
+ do_error:
+-	if (copied)
++	if (copied + copied_syn)
+ 		goto out;
+ out_err:
+ 	err = sk_stream_error(sk, flags, err);
+diff --git a/net/ipv4/tcp_ipv4.c b/net/ipv4/tcp_ipv4.c
+index 01aa77a..1d8b75a 100644
+--- a/net/ipv4/tcp_ipv4.c
++++ b/net/ipv4/tcp_ipv4.c
+@@ -1952,6 +1952,9 @@ void tcp_v4_destroy_sock(struct sock *sk)
+ 		tp->cookie_values = NULL;
+ 	}
+ 
++	/* If socket is aborted during connect operation */
++	tcp_free_fastopen_req(tp);
++
+ 	sk_sockets_allocated_dec(sk);
+ 	sock_release_memcg(sk);
+ }
