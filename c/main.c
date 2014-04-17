@@ -1,11 +1,10 @@
 #include <stdio.h>
 int main(void)
 {
-	printf( "hello"
-	          "world\n" );
-
-	printf( "hello\
-	  world\n" );
-
+	for (;;) {
+		int i = 10;
+		fprintf(stderr, "%s %d %s i=%d\n", __FILE__, __LINE__, __func__, i);
+		i++;
+	}
 	return 0;
 }

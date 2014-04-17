@@ -78,7 +78,23 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	if (listen(server_fd, 10) < 0)
+#if 0
+	if (setsockopt(server_fd, SOL_SOCKET, SO_BINDTODEVICE,(char *)&interface, sizeof(interface)) < 0) {
+		close(server_fd);
+		printf("setsockopt SO_BINDTODEVICE error!\n");
+		return -1;
+	}
+	errno = 0;
+	if ((index = getsockopt(server_fd, SOL_SOCKET, SO_BINDTODEVICE, (char *)&interface, &ifreq_len)) < 0) {
+		close(server_fd);
+		perror("getsockopt SO_BINDTODEVICE error!\n");
+		printf("interface index=%d\n", index);
+		return -1;
+	}
+	printf("interface index=%d\n", index);
+#endif
+
+	if (listen(server_fd, LENGTH_OF_LISTEN_QUEUE) < 0)
 	{
 		printf("call listen failure!\n");
 		exit(1);
