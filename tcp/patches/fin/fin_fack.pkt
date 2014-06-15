@@ -1,0 +1,42 @@
+// Establish a connection.
+0.000 socket(..., SOCK_STREAM, IPPROTO_TCP) = 3
+0.000 setsockopt(3, SOL_SOCKET, SO_REUSEADDR, [1], 4) = 0
+0.000 bind(3, ..., ...) = 0
+0.000 listen(3, 1) = 0
+
+// RTT = 100ms
+0.100 < S 0:0(0) win 32792 <mss 1000,sackOK,nop,nop,nop,wscale 7>
+0.100 > S. 0:0(0) ack 1 <mss 1460,nop,nop,sackOK,nop,wscale 7>
+0.200 < . 1:1(0) ack 1 win 257
+0.200 accept(3, ..., ...) = 4
+
+// Send 8 MSS.
+// tcp_min_tso_segs is 2
+0.200 write(4, ..., 8000) = 8000
++.000 > . 1:2001(2000) ack 1
++.000 > . 2001:4001(2000) ack 1
++.000 > . 4001:6001(2000) ack 1
++.000 > P. 6001:8001(2000) ack 1
++.000   close(4) = 0
++.000 > F. 8001:8001(0) ack 1
+
+// Receiver ACKs 4 packets, the fifth to eighth packets are lost
+0.300 < . 1:1(0) ack 4001 win 257
+
+// PTO = 2RTT, TLP is triggered
+0.500 > F. 8001:8001(0) ack 1 win 229
+0.600 < . 1:1(0) ack 4001 win 257 <sack 8001:8002,nop,nop>
+
+// got SACK, FACK triggers fast recovery and fast retransmit
+0.600 > . 4001:5001(1000) ack 1 win 229
+0.600 > . 5001:6001(1000) ack 1 win 229
+0.700 < . 1:1(0) ack 6001 win 257 <sack 8001:8002,nop,nop>
+
+// fast retransmit
+0.700 > . 6001:7001(1000) ack 1 win 229
+0.700 > P. 7001:8001(1000) ack 1 win 229
+0.700 < . 1:1(0) ack 8002 win 257
+
+// peer close
+0.800 < F. 1:1(0) ack 8002 win 229
+0.800 > . 8002:8002(0) ack 2 
