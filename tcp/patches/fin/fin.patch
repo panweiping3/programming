@@ -1,0 +1,23 @@
+commit cf4589aab19ea7abc2ff33bc2bd6b623b3bf58b6
+Author: Weiping Pan <wpan@redhat.com>
+Date:   Thu Jun 12 09:22:14 2014 -0400
+
+    tcp: enable TLP retransmit pure fin packet
+    
+    Signed-off-by: Weiping Pan <wpan@redhat.com>
+
+diff --git a/net/ipv4/tcp_output.c b/net/ipv4/tcp_output.c
+index 12d6016..4b301e9 100644
+--- a/net/ipv4/tcp_output.c
++++ b/net/ipv4/tcp_output.c
+@@ -2077,9 +2077,7 @@ void tcp_send_loss_probe(struct sock *sk)
+ 	if (WARN_ON(!skb || !tcp_skb_pcount(skb)))
+ 		goto rearm_timer;
+ 
+-	/* Probe with zero data doesn't trigger fast recovery. */
+-	if (skb->len > 0)
+-		err = __tcp_retransmit_skb(sk, skb);
++	err = __tcp_retransmit_skb(sk, skb);
+ 
+ 	/* Record snd_nxt for loss detection. */
+ 	if (likely(!err))
