@@ -1,0 +1,6 @@
+1 why server exits ?
+since recv() returns 0, and break, and exit();
+
+2 why client exits ?
+since server close the connection, send in client will get signal SIGPIPE,
+it will kill the client process.
