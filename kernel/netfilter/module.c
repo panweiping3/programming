@@ -12,8 +12,11 @@ MODULE_LICENSE("GPL");
 /* This is the structure we shall use to register our function */
 static struct nf_hook_ops nfho;
 
-/* IP address we want to drop packets from, in NB order */
-static unsigned char *deny_port = "/x00/x50";   /* port 80 */
+/*
+ * This module is to drop tcp packet whose dest port is 23
+ * telnet uses port 23
+ */
+static __be16 deny_port = htons(23);   /* port 23 */
 
 
 /* This is the hook function itself */
@@ -40,8 +43,9 @@ unsigned int hook_func(unsigned int hooknum,
 	tcph = (struct tcphdr *)(sb->data + iph->ihl * 4);
 	//tcph = tcp_hdr(sb);
 	//pr_warning("%d.%d.%d.%d:%u/t%d.%d.%d.%d:%u/n",NIPQUAD(iph->saddr),ntohs(tcph->source),NIPQUAD(iph->daddr),ntohs(tcph->dest));
-	if(tcph->dest == *(__be16 *)deny_port) {
-		pr_warning("Dropped packet to prot %d/n",ntohs(tcph->dest) );
+	//if(tcph->dest == *(__be16 *)deny_port) {
+	if(tcph->dest == deny_port) {
+		pr_warning("Dropped packet to port %d/n", ntohs(tcph->dest));
 		return NF_DROP;
 	}
 
