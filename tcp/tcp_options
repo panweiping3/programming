@@ -1,0 +1,94 @@
+1 tcp_abort_on_overflow
+It decides when the accept queue is full, that is the server does not call
+"accept" in time, whether it will sent "rst" to the client.
+
+tcp_check_req
+--->tcp_v4_syn_recv_sock
+    --->sk_acceptq_is_full (return NULL)
+    	---> <sysctl_tcp_abort_on_overflow == 0>
+		Y---> inet_rsk(req)->acked = 1
+		N---> tcp_v4_send_reset
+	
+2 tcp_adv_win_scale
+static inline int tcp_win_from_space(int space)
+{
+        return sysctl_tcp_adv_win_scale<=0 ?
+                (space>>(-sysctl_tcp_adv_win_scale)) :
+                space - (space>>sysctl_tcp_adv_win_scale);
+}  
+
+The percentage of buffer reserved for user application / claimed window to the
+peer.
+
+F.e, sysctl_tcp_adv_win_scale = 2,
+it means we reserve 1/4 rcv_buf for user application async read,
+and other 3/4 rcv_buf we can claim window to the peer.
+
+3 tcp_allowed_congestion_control
+4 tcp_app_win
+5 tcp_autocorking
+6 tcp_available_congestion_control
+7 tcp_base_mss
+8 tcp_challenge_ack_limit
+9 tcp_congestion_control
+
+10 tcp_dsack
+This option decides whether we support dsack function,
+1 : enable
+0 : disable
+
+11 tcp_early_retrans
+12 tcp_ecn
+13 tcp_fack
+14 tcp_fastopen
+15 tcp_fastopen_key
+16 tcp_fin_timeout
+17 tcp_frto
+18 tcp_keepalive_intvl
+19 tcp_keepalive_probes
+20 tcp_keepalive_time
+21 tcp_limit_output_bytes
+22 tcp_low_latency
+23 tcp_max_orphans
+24 tcp_max_syn_backlog
+25 tcp_max_tw_buckets
+26 tcp_mem
+27 tcp_min_tso_segs
+28 tcp_moderate_rcvbuf
+29 tcp_mtu_probing
+30 tcp_no_metrics_save
+31 tcp_notsent_lowat
+32 tcp_orphan_retries
+33 tcp_reordering
+34 tcp_retrans_collapse
+35 tcp_retries1
+36 tcp_retries2
+37 tcp_rfc1337
+38 tcp_rmem
+39 tcp_sack
+This option decides whether we support sack function,
+1 : enable
+0 : disable
+40 tcp_slow_start_after_idle
+41 tcp_stdurg
+42 tcp_synack_retries
+43 tcp_syncookies
+44 tcp_syn_retries
+45 tcp_thin_dupack
+46 tcp_thin_linear_timeouts
+47 tcp_timestamps
+This option decides whether we support tcp timestamp function,
+1 : enable
+0 : disable
+
+48 tcp_tso_win_divisor
+49 tcp_tw_recycle
+50 tcp_tw_reuse
+
+51 tcp_window_scaling
+This option decides whether we support window scale option,
+1 : enable
+0 : disable
+
+52 tcp_wmem
+53 tcp_workaround_signed_windows
