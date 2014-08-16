@@ -51,6 +51,7 @@ This option decides whether we support dsack function,
 22 tcp_low_latency
 23 tcp_max_orphans
 24 tcp_max_syn_backlog
+
 25 tcp_max_tw_buckets
 26 tcp_mem
 27 tcp_min_tso_segs
@@ -83,6 +84,8 @@ This option decides whether we support tcp timestamp function,
 
 48 tcp_tso_win_divisor
 49 tcp_tw_recycle
+It decides whether we enable SO_REUSEADDR
+
 50 tcp_tw_reuse
 
 51 tcp_window_scaling
