@@ -22,15 +22,32 @@ peer.
 
 F.e, sysctl_tcp_adv_win_scale = 2,
 it means we reserve 1/4 rcv_buf for user application async read,
-and other 3/4 rcv_buf we can claim window to the peer.
+and other 3/4 rcv_buf we can claim via window to the peer.
 
 3 tcp_allowed_congestion_control
+It shows the congestion control modules which are built into kernel and
+allowed.
+
 4 tcp_app_win
+It specifies how much of the buffer space to reserve for the specific window.
+
 5 tcp_autocorking
+tcp_sendmsg()-->tcp_push()-->tcp_should_autocork()-->sysctl_tcp_autocorking
+It tells whether we should automatically cork the tcp segments since there are
+some segments already in qdisc or nic queues.
+
 6 tcp_available_congestion_control
+It shows the congestion control modules which are already registered. 
+
 7 tcp_base_mss
+/* The least MTU to use for probing */
+#define TCP_BASE_MSS            512
+
 8 tcp_challenge_ack_limit
+
+
 9 tcp_congestion_control
+Show / modify the current congestion control algorithm.
 
 10 tcp_dsack
 This option decides whether we support dsack function,
@@ -50,6 +67,15 @@ This option decides whether we support dsack function,
 21 tcp_limit_output_bytes
 22 tcp_low_latency
 23 tcp_max_orphans
+The client sends fin, and gets ack, so it is in FIN_WAIT_2, and the server is
+in CLOSE_WAIT. At present, if the client exits accidents, then the connection
+in client kernel is orphan.
+tcp_max_orphans controls the maximum number of orphan connections.
+"too many orphaned sockets"
+
+We call tcp_out_of_resources() when retransmit timer or probe timer fires.
+tcp_out_of_resources()-->tcp_check_oom()-->tcp_too_many_orphans()
+
 24 tcp_max_syn_backlog
 25 tcp_max_tw_buckets
 26 tcp_mem
@@ -59,6 +85,8 @@ This option decides whether we support dsack function,
 30 tcp_no_metrics_save
 31 tcp_notsent_lowat
 32 tcp_orphan_retries
+It controls the retry times for an orphan connection to probe a window update.
+
 33 tcp_reordering
 34 tcp_retrans_collapse
 35 tcp_retries1
@@ -71,6 +99,8 @@ This option decides whether we support sack function,
 0 : disable
 40 tcp_slow_start_after_idle
 41 tcp_stdurg
+This variable enables or disables RFC 1122 compliance.
+
 42 tcp_synack_retries
 43 tcp_syncookies
 44 tcp_syn_retries
