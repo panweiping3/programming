@@ -1,0 +1,2 @@
+gcc -DNUM=100000 -o server server.c -lpthread
+
