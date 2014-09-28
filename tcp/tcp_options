@@ -91,7 +91,13 @@ It controls the retry times for an orphan connection to probe a window update.
 33 tcp_reordering
 34 tcp_retrans_collapse
 35 tcp_retries1
+It decides the max retransmit times, if bigger than this limit,
+we need to check route table.
+
 36 tcp_retries2
+It decides the max retransmit times, if bigger than this limit,
+we have to abort.
+
 37 tcp_rfc1337
 38 tcp_rmem
 39 tcp_sack
@@ -105,6 +111,8 @@ This variable enables or disables RFC 1122 compliance.
 42 tcp_synack_retries
 43 tcp_syncookies
 44 tcp_syn_retries
+It decides how many times that a syn packet should be retransmitted. 
+
 45 tcp_thin_dupack
 46 tcp_thin_linear_timeouts
 47 tcp_timestamps

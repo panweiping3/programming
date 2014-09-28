@@ -1,4 +1,4 @@
-obj-m   := module.o  
+obj-m   := simple_module.o  
   
 PWD := $(shell pwd)  
 KERN_DIR = /lib/modules/$(shell uname -r)/build  
