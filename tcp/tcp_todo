@@ -1,2 +1,13 @@
-clean up sk_wmem_alloc/sk_rmem_alloc/sk_rcv_buf/sk_snd_buf
-http://blog.csdn.net/russell_tao/article/details/18711023
+1 vxlan
+2 docker
+3 openvswitch
+
+
+NOTE 1:
+
+sk->lock.owned will be "1" while the backlog is processed.
+Exclusive access to the socket is indicated by one of the
+following two conditions being true:
+
+1) sk->lock.slock being held
+2) sk->lock.owned being non-zero
