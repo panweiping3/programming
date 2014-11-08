@@ -55,7 +55,98 @@ This option decides whether we support dsack function,
 0 : disable
 
 11 tcp_early_retrans
+	0 disables ER
+	1 enables ER
+	2 enables ER but delays fast recovery and fast retransmit
+	  by a fourth of RTT.
+	  This mitigates connection falsely
+	  recovers when network has a small degree of reordering
+	  (less than 3 packets).
+	3 enables delayed ER and TLP.
+	4 enables TLP only.
+	Default: 3
+
 12 tcp_ecn
+default value for tcp: 2
+If its value is 1, it will send ECN enable options in SYN packet.
+
+tcp flags layout
+|               |
+|---------------|
+|C|E|U|A|P|R|S|F|
+|---------------|
+|7   5   3     0| 
+
+a) way handshakes if we set tcp_ecn with 1
+A                                        B
+---> SYN (CWR=1, ECE=1)
+		SYN+ACK (CWR=0,ECE=1)<---
+---> ACK (CWR=0, ECE=0)
+
+#define TCP_ECN_OK              1
+#define TCP_ECN_QUEUE_CWR       2	/*	tell peer we have handled cwr	*/
+#define TCP_ECN_DEMAND_CWR      4	/*	require peer to handle cwr	*/
+#define TCP_ECN_SEEN            8
+
+enum {           
+	INET_ECN_NOT_ECT = 0,
+	INET_ECN_ECT_1 = 1,
+	INET_ECN_ECT_0 = 2,	/*	it means ip ecn function works	*/
+	INET_ECN_CE = 3,	/*	router set it, and tcp get it from ip tos */
+	INET_ECN_MASK = 3,
+};       
+
+b) tcp get ip tos
+int tcp_v4_rcv(struct sk_buff *skb)
+-->TCP_SKB_CB(skb)->ip_dsfield = ipv4_get_dsfield(iph);
+
+ecn handle
+
+router find congestion
+IP_ECN_set_ce
+--> iph->tos |= INET_ECN_CE
+
+tcp_event_data_recv/tcp_data_queue_ofo (A)
+-->tcp_ecn_check_ce
+	-->__tcp_ecn_check_ce
+		--> switch (TCP_SKB_CB(skb)->ip_dsfield & INET_ECN_MASK)
+			case INET_ECN_CE:
+			tp->ecn_flags |= TCP_ECN_DEMAND_CWR | TCP_ECN_SEEN;
+
+tcp_transmit_skb (A)
+-->tcp_ecn_send
+	--> INET_ECN_xmit
+		--> inet_sk(sk)->tos |= INET_ECN_ECT_0
+	--> if (tp->ecn_flags & TCP_ECN_DEMAND_CWR)
+		tcp_hdr(skb)->ece = 1;
+
+tcp_ack (B)
+-->tcp_ecn_rcv_ecn_echo
+	--> if (th->ece && !th->syn && (tp->ecn_flags & TCP_ECN_OK))
+	    	flag |= FLAG_ECE;
+	-->tcp_try_to_open
+		-->  if (flag & FLAG_ECE)
+			tcp_enter_cwr(sk);
+			-->tcp_init_cwnd_reduction
+				-->tcp_ecn_queue_cwr
+					--> if (tp->ecn_flags & TCP_ECN_OK)
+						   tp->ecn_flags |= TCP_ECN_QUEUE_CWR;
+
+tcp_transmit_skb (B)
+-->tcp_ecn_send
+	--> INET_ECN_xmit
+		--> inet_sk(sk)->tos |= INET_ECN_ECT_0
+	--> if (tp->ecn_flags & TCP_ECN_QUEUE_CWR) {
+		tp->ecn_flags &= ~TCP_ECN_QUEUE_CWR;
+	  	tcp_hdr(skb)->cwr = 1;
+	    }
+
+tcp_data_queue (A)
+--> tcp_ecn_accept_cwr
+	--> if (tcp_hdr(skb)->cwr)
+		tp->ecn_flags &= ~TCP_ECN_DEMAND_CWR;
+
+
 13 tcp_fack
 14 tcp_fastopen
 15 tcp_fastopen_key
@@ -82,6 +173,7 @@ tcp_out_of_resources()-->tcp_check_oom()-->tcp_too_many_orphans()
 26 tcp_mem
 27 tcp_min_tso_segs
 28 tcp_moderate_rcvbuf
+
 29 tcp_mtu_probing
 30 tcp_no_metrics_save
 31 tcp_notsent_lowat

@@ -1,6 +1,7 @@
 1 vxlan
 2 docker
 3 openvswitch
+4 Q can we have the same ip address in different netns ?
 
 
 NOTE 1:
