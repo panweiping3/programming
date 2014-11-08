@@ -148,15 +148,102 @@ tcp_data_queue (A)
 
 
 13 tcp_fack
+This option decides whether we support fack.
+
 14 tcp_fastopen
+
+echo 3 > /proc/sys/net/ipv4/tcp_fastopen
+
+To use this feature, the client application must use sendmsg() or sendto()
+with MSG_FASTOPEN flag rather than connect() to perform a TCP handshake
+automatically.  
+	The values (bitmap) are
+	1: Enables sending data in the opening SYN on the client w/ MSG_FASTOPEN.
+	2: Enables TCP Fast Open on the server side, i.e., allowing data in
+	   a SYN packet to be accepted and passed to the application before
+	   3-way hand shake finishes.
+	4: Send data in the opening SYN regardless of cookie availability and
+	   without a cookie option.
+	0x100: Accept SYN data w/o validating the cookie.
+	0x200: Accept data-in-SYN w/o any cookie option present.
+	0x400/0x800: Enable Fast Open on all listeners regardless of the
+	   TCP_FASTOPEN socket option. The two different flags designate two
+	   different ways of setting max_qlen without the TCP_FASTOPEN socket
+	   option.
+
+	Default: 1
+
+	The values (bitmap) are
+	1: Enables sending data in the opening SYN on the client w/ MSG_FASTOPEN.
+	2: Enables TCP Fast Open on the server side, i.e., allowing data in
+	   a SYN packet to be accepted and passed to the application before
+	   3-way hand shake finishes.
+	4: Send data in the opening SYN regardless of cookie availability and
+	   without a cookie option.
+	0x100: Accept SYN data w/o validating the cookie.
+	0x200: Accept data-in-SYN w/o any cookie option present.
+	0x400/0x800: Enable Fast Open on all listeners regardless of the
+	   TCP_FASTOPEN socket option. The two different flags designate two
+	   different ways of setting max_qlen without the TCP_FASTOPEN socket
+	   option.
+
+	Default: 1
+
+	Note that the client & server side Fast Open flags (1 and 2
+	respectively) must be also enabled before the rest of flags can take
+	effect.
+	Note that the client & server side Fast Open flags (1 and 2
+	respectively) must be also enabled before the rest of flags can take
+	effect.
+
 15 tcp_fastopen_key
+
 16 tcp_fin_timeout
+#define TCP_TIMEWAIT_LEN (60*HZ) /* how long to wait to destroy TIME-WAIT state, about 60 seconds */
+#define TCP_FIN_TIMEOUT TCP_TIMEWAIT_LEN 
+
+This option decides the time that socket will stay in FIN_WAIT_2 state until
+the peer to call close().
+
 17 tcp_frto
+default value: 2
+Forward RTO recovery
+
+If a never retransmited packet is sacked, the frto is true, undo it
+if (tcp_try_undo_loss(sk, flag & FLAG_ORIG_SACK_ACKED))
+	return;
+
 18 tcp_keepalive_intvl
+#define TCP_KEEPALIVE_INTVL     (75*HZ)
+It decides the keepalive probe does not get acked, then we will send next
+probe packet in 75s.
+
+tcp has an option TCP_KEEPINTVL, to modify it for one socket.
+
 19 tcp_keepalive_probes
+The maximum keepalive probe packets that we send before we can make sure that
+a connection is dead
+tcp has an option TCP_KEEPCNT, to modify it for one socket.
+
 20 tcp_keepalive_time
+#define TCP_KEEPALIVE_TIME      (120*60*HZ)     /* two hours */
+It decides if keepalive is enabled, then we will send probe packet every two
+hours.
+
+tcp has an option TCP_KEEPIDLE, to modify it for one socket.
+it will start keeplive probe after this period.
+#define TCP_KEEPIDLE            4       /* Start keeplives after this period */
+
+
 21 tcp_limit_output_bytes
+/* Default TSQ limit of two TSO segments */
+int sysctl_tcp_limit_output_bytes __read_mostly = 131072;
+
 22 tcp_low_latency
+default value: 0
+If its value is 1, then we will disable tcp prequeue.
+
+
 23 tcp_max_orphans
 The client sends fin, and gets ack, so it is in FIN_WAIT_2, and the server is
 in CLOSE_WAIT. At present, if the client exits accidents, then the connection
