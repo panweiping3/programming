@@ -241,8 +241,8 @@ int sysctl_tcp_limit_output_bytes __read_mostly = 131072;
 
 22 tcp_low_latency
 default value: 0
-If its value is 1, then we will disable tcp prequeue.
-
+If its value is 1, then we will disable tcp prequeue,
+which can handle packets in process context instead of softirq context.
 
 23 tcp_max_orphans
 The client sends fin, and gets ack, so it is in FIN_WAIT_2, and the server is
@@ -255,20 +255,212 @@ We call tcp_out_of_resources() when retransmit timer or probe timer fires.
 tcp_out_of_resources()-->tcp_check_oom()-->tcp_too_many_orphans()
 
 24 tcp_max_syn_backlog
+default value : 256
+-->listen(5)
+	-->inet_listen(int backlog)
+		-->inet_csk_listen_start(int nr_table_entries)
+			-->reqsk_queue_alloc(unsigned int nr_table_entries)
+				nr_table_entries = min_t(u32, nr_table_entries, sysctl_max_syn_backlog);
+				nr_table_entries = max_t(u32, nr_table_entries, 8);
+				nr_table_entries = roundup_pow_of_two(nr_table_entries + 1);
+				lopt->max_qlen_log = ilog2(nr_table_entries);
+		-->sk->sk_max_ack_backlog = backlog;
+
+static inline int reqsk_queue_is_full(const struct request_sock_queue *queue)
+{       
+	return queue->listen_opt->qlen >> queue->listen_opt->max_qlen_log;
+}
+
+
+static inline bool sk_acceptq_is_full(const struct sock *sk)
+{
+	return sk->sk_ack_backlog > sk->sk_max_ack_backlog;
+}   
+
+This option decides the maximum number of listen() parameter.
+And if we want to wait for more connection to be extablished,
+we can increase it.
 
 25 tcp_max_tw_buckets
+default value:  NR_FILE * 2
+#define NR_FILE  8192
+tcp_init()
+-->tcp_death_row.sysctl_max_tw_buckets = cnt / 2 = 65536 / 2 = 32768
+
+It decides the maximum number of sockets in timewait state.
+
 26 tcp_mem
+the unit is PAGE_SIZE
+static void __init tcp_init_mem(void)
+{
+	unsigned long limit = nr_free_buffer_pages() / 8;
+	limit = max(limit, 128UL);
+	sysctl_tcp_mem[0] = limit / 4 * 3;             	// 1/8 * 3/4 = 3/32
+	sysctl_tcp_mem[1] = limit;			// 1/8
+	sysctl_tcp_mem[2] = sysctl_tcp_mem[0] * 2;	// 1/8 * 3/4 * 2 = 3/16
+}
+
+static inline bool tcp_out_of_memory(struct sock *sk)
+{
+	if (sk->sk_wmem_queued > SOCK_MIN_SNDBUF && sk_memory_allocated(sk) > sk_prot_mem_limits(sk, 2))
+		return true;
+	return false;
+}
+
+("out of memory -- consider tuning tcp_mem\n");
+
+
+38 tcp_rmem
+#define SK_MEM_QUANTUM ((int)PAGE_SIZE)
+limit = nr_free_buffer_pages() << (PAGE_SHIFT - 7);
+max_rshare = min(6UL*1024*1024, limit);
+
+sysctl_tcp_rmem[0] = SK_MEM_QUANTUM;
+sysctl_tcp_rmem[1] = 87380;
+sysctl_tcp_rmem[2] = max(87380, max_rshare);
+
+sk->sk_rcvbuf = min(rcvmem, sysctl_tcp_rmem[2]);
+
+check memmory with tcp_try_rmem_schedule() before tcp_queue_rcv().
+
+static int tcp_try_rmem_schedule(struct sock *sk, struct sk_buff *skb,
+				 unsigned int size)
+{
+	if (atomic_read(&sk->sk_rmem_alloc) > sk->sk_rcvbuf ||
+	    !sk_rmem_schedule(sk, skb, size)) {
+
+		if (tcp_prune_queue(sk) < 0)
+			return -1;
+
+		if (!sk_rmem_schedule(sk, skb, size)) {
+			if (!tcp_prune_ofo_queue(sk))
+				return -1;
+
+			if (!sk_rmem_schedule(sk, skb, size))
+				return -1;
+		}
+	}
+	return 0;
+}
+
+static inline bool
+sk_rmem_schedule(struct sock *sk, struct sk_buff *skb, int size)
+{
+	if (!sk_has_account(sk))
+		return true;
+	return size<= sk->sk_forward_alloc ||
+		__sk_mem_schedule(sk, size, SK_MEM_RECV) ||
+		skb_pfmemalloc(skb);
+}
+
+52 tcp_wmem
+#define SK_MEM_QUANTUM ((int)PAGE_SIZE)
+limit = nr_free_buffer_pages() << (PAGE_SHIFT - 7);
+max_wshare = min(4UL*1024*1024, limit);
+sysctl_tcp_wmem[0] = SK_MEM_QUANTUM;
+sysctl_tcp_wmem[1] = 16*1024;
+sysctl_tcp_wmem[2] = max(64*1024, max_wshare);
+
+sk->sk_sndbuf <= sysctl_tcp_wmem[2]
+
+static inline bool sk_stream_memory_free(const struct sock *sk)
+{
+	if (sk->sk_wmem_queued >= sk->sk_sndbuf)
+		return false;
+
+	return sk->sk_prot->stream_memory_free ?
+		sk->sk_prot->stream_memory_free(sk) : true;
+}
+
+static inline bool sk_wmem_schedule(struct sock *sk, int size)
+{
+	if (!sk_has_account(sk))
+		return true;
+	return size <= sk->sk_forward_alloc ||
+		__sk_mem_schedule(sk, size, SK_MEM_SEND);
+}
+
 27 tcp_min_tso_segs
+default value : 2
+
+tcp_xmit_size_goal()
+{
+	gso_size = sk->sk_pacing_rate / (2 * MSEC_PER_SEC);
+	gso_size = max_t(u32, gso_size, sysctl_tcp_min_tso_segs * mss_now);
+}
+
 28 tcp_moderate_rcvbuf
+default value : 1
+adjust memory automatically
 
 29 tcp_mtu_probing
+default value : 0
+0 - Disabled
+1 - Disabled by default, enabled when an ICMP black hole detected
+2 - Always enabled, use initial MSS of tcp_base_mss.
+
+#define TCP_BASE_MSS            512
+int sysctl_tcp_base_mss __read_mostly = TCP_BASE_MSS;
+
+tcp_write_timeout
+-->if (retransmits_timed_out(sk, sysctl_tcp_retries1, 0, 0)) {
+	/* Black hole detection */
+	tcp_mtu_probing(icsk, sk);
+	dst_negative_advice(sk);
+   }
+
 30 tcp_no_metrics_save
+default value : 0
+It decides whether we will save tcp metrics
+
 31 tcp_notsent_lowat
+default value : -1
+unsigned int sysctl_tcp_notsent_lowat __read_mostly = UINT_MAX;
+
+tcp has an option TCP_NOTSENT_LOWAT, which limits the number of unsent bytes
+in write queue.
+#define TCP_NOTSENT_LOWAT       25      /* limit number of unsent bytes in write queue */
+static inline u32 tcp_notsent_lowat(const struct tcp_sock *tp)
+{      
+	return tp->notsent_lowat ?: sysctl_tcp_notsent_lowat;
+}    
+
+static inline bool tcp_stream_memory_free(const struct sock *sk)
+{      
+	const struct tcp_sock *tp = tcp_sk(sk);
+	u32 notsent_bytes = tp->write_seq - tp->snd_nxt;
+	
+	return notsent_bytes < tcp_notsent_lowat(tp);
+}      
+
+
 32 tcp_orphan_retries
+default value : 0
 It controls the retry times for an orphan connection to probe a window update.
 
 33 tcp_reordering
+default value : 3
+The thresh of reordering.
+
+/* After receiving this amount of duplicate ACKs fast retransmit starts. */
+#define TCP_FASTRETRANS_THRESH 3
+int sysctl_tcp_reordering __read_mostly = TCP_FASTRETRANS_THRESH;
+
+tcp_init_sock()
+-->tp->reordering = sysctl_tcp_reordering;
+
+static bool tcp_time_to_recover(struct sock *sk, int flag)
+{
+	/* Not-A-Trick#2 : Classic rule... */
+	if (tcp_dupack_heuristics(tp) > tp->reordering)
+	        return true;
+}
+
 34 tcp_retrans_collapse
+default value : 1
+This option decides whether we allow collapse segments during retransmission.
+tcp_retrans_try_collapse()
+
 35 tcp_retries1
 It decides the max retransmit times, if bigger than this limit,
 we need to check route table.
@@ -278,7 +470,17 @@ It decides the max retransmit times, if bigger than this limit,
 we have to abort.
 
 37 tcp_rfc1337
-38 tcp_rmem
+default value : 0
+tcp_timewait_state_process()
+---->  	if (sysctl_tcp_rfc1337 == 0) {
+		inet_twsk_deschedule(tw, &tcp_death_row);
+		inet_twsk_put(tw);
+		return TCP_TW_SUCCESS;
+     	}
+	inet_twsk_schedule(tw, &tcp_death_row, TCP_TIMEWAIT_LEN, TCP_TIMEWAIT_LEN);
+
+This option decides how to handle rst packet in timewait state.
+
 39 tcp_sack
 This option decides whether we support sack function,
 1 : enable
@@ -289,6 +491,21 @@ This variable enables or disables RFC 1122 compliance.
 
 42 tcp_synack_retries
 43 tcp_syncookies
+default value : 1
+tcp_conn_request()
+-->if ((sysctl_tcp_syncookies == 2 || inet_csk_reqsk_queue_is_full(sk)) && !isn) {
+	want_cookie = tcp_syn_flood_action(sk, skb, rsk_ops->slab_name);
+	if (!want_cookie)
+		goto drop;
+}
+
+If we enable tcp_syncookies, and if reqsk_queue_is_full() is true,
+then we should generate a special isn and send the syn+ack back instead of
+dropping the syn from the client.
+
+But tcp_syncookies is not recommended to use, we should modify
+tcp_max_syn_backlog and backlog to accept more cocurrent connections.
+
 44 tcp_syn_retries
 It decides how many times that a syn packet should be retransmitted. 
 
@@ -301,6 +518,7 @@ This option decides whether we support tcp timestamp function,
 
 48 tcp_tso_win_divisor
 49 tcp_tw_recycle
+default value : 0
 It decides whether we enable SO_REUSEADDR
 
 50 tcp_tw_reuse
@@ -310,5 +528,4 @@ This option decides whether we support window scale option,
 1 : enable
 0 : disable
 
-52 tcp_wmem
 53 tcp_workaround_signed_windows
