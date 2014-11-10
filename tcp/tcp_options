@@ -472,11 +472,13 @@ we have to abort.
 37 tcp_rfc1337
 default value : 0
 tcp_timewait_state_process()
----->  	if (sysctl_tcp_rfc1337 == 0) {
-		inet_twsk_deschedule(tw, &tcp_death_row);
-		inet_twsk_put(tw);
-		return TCP_TW_SUCCESS;
-     	}
+---->  	if (th->rst) {
+		if (sysctl_tcp_rfc1337 == 0) {
+			inet_twsk_deschedule(tw, &tcp_death_row);
+			inet_twsk_put(tw);
+			return TCP_TW_SUCCESS;
+     		}
+	}
 	inet_twsk_schedule(tw, &tcp_death_row, TCP_TIMEWAIT_LEN, TCP_TIMEWAIT_LEN);
 
 This option decides how to handle rst packet in timewait state.
