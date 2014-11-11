@@ -1,4 +1,5 @@
 1 tcp_abort_on_overflow
+default value : 0
 It decides when the accept queue is full, that is the server does not call
 "accept" in time, whether it will sent "rst" to the client.
 
@@ -10,6 +11,7 @@ tcp_check_req
 		N---> tcp_v4_send_reset
 	
 2 tcp_adv_win_scale
+default value : 1
 static inline int tcp_win_from_space(int space)
 {
         return sysctl_tcp_adv_win_scale<=0 ?
@@ -25,36 +27,48 @@ it means we reserve 1/4 rcv_buf for user application async read,
 and other 3/4 rcv_buf we can claim via window to the peer.
 
 3 tcp_allowed_congestion_control
+default value : cubic reno
+
 It shows the congestion control modules which are built into kernel and
 allowed.
 
 4 tcp_app_win
+default value : 31
+
 It specifies how much of the buffer space to reserve for the specific window.
 
 5 tcp_autocorking
+default value : 1
 tcp_sendmsg()-->tcp_push()-->tcp_should_autocork()-->sysctl_tcp_autocorking
 It tells whether we should automatically cork the tcp segments since there are
 some segments already in qdisc or nic queues.
 
 6 tcp_available_congestion_control
+default value : cubic reno
 It shows the congestion control modules which are already registered. 
 
 7 tcp_base_mss
+default value : 512
 /* The least MTU to use for probing */
 #define TCP_BASE_MSS            512
 
 8 tcp_challenge_ack_limit
+default value : 100
 
+It decide the threshhold of challenge ack numbers
 
 9 tcp_congestion_control
+default value : cubic
 Show / modify the current congestion control algorithm.
 
 10 tcp_dsack
+default value : 1
 This option decides whether we support dsack function,
 1 : enable
 0 : disable
 
 11 tcp_early_retrans
+default value : 3
 	0 disables ER
 	1 enables ER
 	2 enables ER but delays fast recovery and fast retransmit
@@ -67,7 +81,7 @@ This option decides whether we support dsack function,
 	Default: 3
 
 12 tcp_ecn
-default value for tcp: 2
+default value : 2
 If its value is 1, it will send ECN enable options in SYN packet.
 
 tcp flags layout
@@ -151,7 +165,7 @@ tcp_data_queue (A)
 This option decides whether we support fack.
 
 14 tcp_fastopen
-
+default value : 1
 echo 3 > /proc/sys/net/ipv4/tcp_fastopen
 
 To use this feature, the client application must use sendmsg() or sendto()
@@ -197,8 +211,10 @@ automatically.
 	effect.
 
 15 tcp_fastopen_key
+default value : 00000000-00000000-00000000-00000000
 
 16 tcp_fin_timeout
+default value: 60
 #define TCP_TIMEWAIT_LEN (60*HZ) /* how long to wait to destroy TIME-WAIT state, about 60 seconds */
 #define TCP_FIN_TIMEOUT TCP_TIMEWAIT_LEN 
 
@@ -214,6 +230,7 @@ if (tcp_try_undo_loss(sk, flag & FLAG_ORIG_SACK_ACKED))
 	return;
 
 18 tcp_keepalive_intvl
+default value: 75
 #define TCP_KEEPALIVE_INTVL     (75*HZ)
 It decides the keepalive probe does not get acked, then we will send next
 probe packet in 75s.
@@ -221,11 +238,13 @@ probe packet in 75s.
 tcp has an option TCP_KEEPINTVL, to modify it for one socket.
 
 19 tcp_keepalive_probes
+default value: 9
 The maximum keepalive probe packets that we send before we can make sure that
 a connection is dead
 tcp has an option TCP_KEEPCNT, to modify it for one socket.
 
 20 tcp_keepalive_time
+default value:  7200
 #define TCP_KEEPALIVE_TIME      (120*60*HZ)     /* two hours */
 It decides if keepalive is enabled, then we will send probe packet every two
 hours.
@@ -236,6 +255,7 @@ it will start keeplive probe after this period.
 
 
 21 tcp_limit_output_bytes
+default value : 131072
 /* Default TSQ limit of two TSO segments */
 int sysctl_tcp_limit_output_bytes __read_mostly = 131072;
 
@@ -245,6 +265,7 @@ If its value is 1, then we will disable tcp prequeue,
 which can handle packets in process context instead of softirq context.
 
 23 tcp_max_orphans
+default value : 32768
 The client sends fin, and gets ack, so it is in FIN_WAIT_2, and the server is
 in CLOSE_WAIT. At present, if the client exits accidents, then the connection
 in client kernel is orphan.
@@ -282,7 +303,7 @@ And if we want to wait for more connection to be extablished,
 we can increase it.
 
 25 tcp_max_tw_buckets
-default value:  NR_FILE * 2
+default value:  32768
 #define NR_FILE  8192
 tcp_init()
 -->tcp_death_row.sysctl_max_tw_buckets = cnt / 2 = 65536 / 2 = 32768
@@ -492,6 +513,30 @@ This option decides whether we support sack function,
 This variable enables or disables RFC 1122 compliance.
 
 42 tcp_synack_retries
+default value : 5
+#define TCP_SYNACK_RETRIES 5
+int sysctl_tcp_synack_retries __read_mostly = TCP_SYNACK_RETRIES;
+
+tcp has an option (TCP_SYNCNT) to modify it,
+This option will retransmit syn in client while retransmit syn+ack in server.
+
+set up timer (use keepalive timer)
+#define TCP_TIMEOUT_INIT ((unsigned)(1*HZ))     /* RFC6298 2.1 initial RTO value */
+inet_csk_reqsk_queue_hash_add()
+-->inet_csk_reqsk_queue_added()
+	-->inet_csk_reset_keepalive_timer()
+		-->sk_reset_timer(sk, &sk->sk_timer, jiffies + TCP_TIMEOUT_INIT);
+
+
+tcp_keepalive_timer()
+--> if (sk->sk_state == TCP_LISTEN) {
+	tcp_synack_timer(sk);
+    }
+-->tcp_synack_timer()
+	-->inet_csk_reqsk_queue_prune  //#define TCP_SYNQ_INTERVAL (HZ/5)  /* Period of SYNACK timer */
+		-->inet_rtx_syn_ack
+
+
 43 tcp_syncookies
 default value : 1
 tcp_conn_request()
@@ -510,24 +555,116 @@ tcp_max_syn_backlog and backlog to accept more cocurrent connections.
 
 44 tcp_syn_retries
 It decides how many times that a syn packet should be retransmitted. 
+#define TCP_SYN_RETRIES  6     /* This is how many retries are done
+				* when active opening a connection.
+				* RFC1122 says the minimum retry MUST be at
+				* least 180secs.  Nevertheless
+				* this value is corresponding to 63secs of retransmission with
+				* current initial RTO.
+				*/
+int sysctl_tcp_syn_retries __read_mostly = TCP_SYN_RETRIES;
+
+tcp has an option (TCP_SYNCNT) to override it. 
+And we use RTO timer to trigger this.
 
 45 tcp_thin_dupack
+default value : 0
+
+tcp has an option (TCP_THIN_DUPACK) to override it.
+
+If we are a thin connection, that is the outstadning packets less than 4,
+and we do not have more data to send, and if we receive the first duplicate
+ack (or sack), then we enter recovery state and retransmit the first
+unacknowledged packet.
+
+tcp_time_to_recover()
+-->	/* If a thin stream is detected, retransmit after first
+	 * received dupack. Employ only if SACK is supported in order
+	 * to avoid possible corner-case series of spurious retransmissions
+	 * Use only if there are no unsent data.
+	 */
+	if ((tp->thin_dupack || sysctl_tcp_thin_dupack) &&
+		tcp_stream_is_thin(tp) && tcp_dupack_heuristics(tp) > 1 &&
+		tcp_is_sack(tp) && !tcp_send_head(sk))
+	return true;
+
+/* Determines whether this is a thin stream (which may suffer from
+ * increased latency). Used to trigger latency-reducing mechanisms.
+ */
+static inline bool tcp_stream_is_thin(struct tcp_sock *tp)
+{           
+	return tp->packets_out < 4 &&
+		!tcp_in_initial_slowstart(tp);
+}   
+
 46 tcp_thin_linear_timeouts
+default value : 0
+tcp has an option TCP_THIN_LINEAR_TIMEOUTS to override it.
+
+If it is true, then we use linear timeout instead of exponential backoff.
+
 47 tcp_timestamps
+default value : 1
 This option decides whether we support tcp timestamp function,
 1 : enable
 0 : disable
 
 48 tcp_tso_win_divisor
+default value : 3
+
+3 means 1/3 of congestion window
+
+/* This limits the percentage of the congestion window which we
+ * will allow a single TSO frame to consume.  Building TSO frames
+ * which are too large can cause TCP streams to be bursty.
+ */
+
+
 49 tcp_tw_recycle
 default value : 0
 It decides whether we enable SO_REUSEADDR
 
 50 tcp_tw_reuse
+default value : 0
+This allows reusing sockets in TIME_WAIT state for new connections when it is
+safe from protocol viewpoint. Default value is 0 (disabled). It is generally a
+safer alternative to tcp_tw_recycle.
 
 51 tcp_window_scaling
+default value : 1
 This option decides whether we support window scale option,
 1 : enable
 0 : disable
 
 53 tcp_workaround_signed_windows
+default value : 0
+
+/* 
+ * Never offer a window over 32767 without using window scaling. Some
+ * poor stacks do signed 16bit maths! 
+ */
+#define MAX_TCP_WINDOW          32767U
+
+/* NOTE: offering an initial window larger than 32767
+* will break some buggy TCP stacks. If the admin tells us
+* it is likely we could be speaking with such a buggy stack
+* we will truncate our initial window offering to 32K-1
+* unless the remote has sent us a window scaling option,
+* which we interpret as a sign the remote TCP is not
+* misinterpreting the window field as a signed quantity.
+*/
+
+tcp_select_initial_window()
+--> if (sysctl_tcp_workaround_signed_windows)
+	(*rcv_wnd) = min(space, MAX_TCP_WINDOW);
+    else
+   	(*rcv_wnd) = space;
+
+/* Make sure we do not exceed the maximum possible
+ * scaled window.
+ */
+if (!tp->rx_opt.rcv_wscale && sysctl_tcp_workaround_signed_windows)
+	new_win = min(new_win, MAX_TCP_WINDOW);
+else    
+	new_win = min(new_win, (65535U << tp->rx_opt.rcv_wscale));
+

@@ -6,7 +6,10 @@
 6 [pwp@localhost net]$ cat /proc/sys/net/ipv4/tcp_notsent_lowat 
 			-1
 7 skb_copy_to_page() is not used by any functions any longer.
-
+8 TCP_DEFER_ACCEPT
+Linux 提供的一个特殊 setsockopt ,　在 accept 的 socket 上面，只有当实际收到了数据，才唤醒正在 accept
+的进程，可以减少一些无聊的上下文切换。 
+9 http://www.shellsec.com/tech/80863.html 
 
 NOTE 1:
 
