@@ -8,6 +8,7 @@
 Linux 提供的一个特殊 setsockopt ,　在 accept 的 socket 上面，只有当实际收到了数据，才唤醒正在 accept
 的进程，可以减少一些无聊的上下文切换。 
 9 http://www.shellsec.com/tech/80863.html 
+10 GSO GRO
 
 NOTE 1:
 
