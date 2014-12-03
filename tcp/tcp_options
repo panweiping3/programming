@@ -268,8 +268,8 @@ which can handle packets in process context instead of softirq context.
 23 tcp_max_orphans
 default value : 32768
 The client sends fin, and gets ack, so it is in FIN_WAIT_2, and the server is
-in CLOSE_WAIT. At present, if the client exits accidents, then the connection
-in client kernel is orphan.
+in CLOSE_WAIT. At present, if the client application exits accidents, then the
+connection in client kernel is orphan.
 tcp_max_orphans controls the maximum number of orphan connections.
 "too many orphaned sockets"
 
@@ -618,9 +618,10 @@ If it is true, then we use linear timeout instead of exponential backoff.
 
 48 tcp_timestamps
 default value : 1
-This option decides whether we support tcp timestamp function,
+This option decides whether we support tcp timestamp function, rfc 1323
 1 : enable
 0 : disable
+
 
 49 tcp_tso_win_divisor
 default value : 3
@@ -635,7 +636,7 @@ default value : 3
 
 50 tcp_tw_recycle
 default value : 0
-It decides whether we enable SO_REUSEADDR
+It decides whether we enable SO_REUSEADDR globally.
 
 51 tcp_tw_reuse
 default value : 0
