@@ -1,0 +1,190 @@
+1 What is DUP
+Driver Update Packages from Red Hat implement a mechanism whereby
+system drivers (and other loadable Linux kernel modules) may be added
+to, or updated on, existing installations of Red Hat Enterprise Linux. Such
+drivers can be pre-compiled and distributed (along with source) in the form
+of regular RPM packages that users may install easily onto their systems,
+without requiring build tools or specialist knowledge concerning the kernel.
+
+2 DUP schedule
+During planing time the customer will file a ystream bug to request a driver
+update to enable new hardware or critical bug fix, and our ystream developer
+will fix the bug before beta. At the same time the customer can raise a DUP
+request based on this ystream bug, and we will start to build it after beta.
+After we have local build DUP iso, we will ask the customer and QE to test to
+see if it works as we expect. Once we get positive feedback from customer and
+QE, we will imoprt the srpm into dist-git, and build it in brew. Then we will
+create an errata to track it, and add build into errata, and transfer to QE
+once we finish the "RPMDiff Tests". QE will go on their TPS test and release
+it.
+
+3 DUP request
+The customer will file a DUP request based on their needs, and our DUP PM and
+manager and developer will evaluate whether we can approve their request.
+Basically a valid DUP request should meet following requirements:
+a) it enables new hardware
+b) it should be filed before beta
+c) the corresponding ystream bug must be fixed before beta
+d) it is better not involve middle layer module
+
+4 DUP workfolw
+a) evaluate customer's DUP request
+b) local build and test
+c) ask the customer and QE to test local build DUP iso
+d) add srpm into dist-git and build it in brew
+e) create errata
+f) add brew build into errata and finish "RPMDiff Tests"
+g) transfer to QE and go on with TPS test and release.
+
+5 DUP git repo
+
+kernel source code,
+git://git.app.eng.bos.redhat.com/rhel5/kernel.git
+git://git.app.eng.bos.redhat.com/rhel6.git
+git://git.app.eng.bos.redhat.com/rhel7.git
+
+DUP repo
+git://git.engineering.redhat.com/users/wpan/rhel5-dup.git
+git://git.engineering.redhat.com/users/wpan/rhel6-dup.git
+git://git.engineering.redhat.com/users/wpan/rhel7-dup.git
+
+6 related tools/packages
+kmod, redhat-rpm-config, kernel-abi-whitelists redhat-rpm-config kernel-devel
+genisoimage createrepo
+
+7 local build and test
+redhat/dup/
+redhat/dup/Makefile 
+It is the main make to control the DUP build process,
+and it runs according to the paramenters that you specify on the command line.
+
+redhat/dup/Makefile.firmware
+It is the makefile to build driver firmware sub-package,
+some driver will needs firmware to work.
+
+redhat/dup/Makefile.sources
+There are several keywords that you should specify,
+assume the driver name is DRIVERXXX,
+
+DUP_SOURCE_DRIVERXXX
+We should specify all the source codes here,
+DUP_VERSION_DRIVERXXX
+We should specify the version of driver here.
+If the driver does not have a version in its source codes,
+please refer to the doc.
+
+DUP_SYMVERS_DRIVERXXX
+This driver may depend on the symbol versions that provided by other drivers,
+we should specify them here.
+
+DUP_FIRMWARE_DRIVERXXX
+This driver may need some firmware files, and we can specify them here.
+In RHEL7, firmware files can be found in brew, search "linux-firmware"
+package, then put them in your repo.
+
+DUP_FIRMWARE_VERSION_DRIVERXXX
+We can specify the version of the firmware package.
+
+
+redhat/dup/template.files
+redhat/dup/template.spec
+redhat/dup/template.conf
+They are three template files, and other scripts will modify them and convert
+them.
+
+redhat/dup/makefiles/
+If the driver needs a special makefile, put it here.
+
+redhat/dup/patches/
+If the driver needs a patch, put it here.
+
+redhat/dup/greylists/
+We store the greylist files here.
+
+redhat/dup/symvers/
+We store the symbol version files here.
+
+redhat/dup/gengreylist.sh
+It will be called to generate greylist if we specify "update-greylist" in the command line,
+make -f redhat/dup/Makefile DUP_DRIVER=bnx2x update-greylist
+redhat/dup/greylists/bnx2x/symbols.greylist-x86_64
+
+redhat/dup/depmodconf
+redhat/dup/find-requires.ksyms
+redhat/dup/find-provides.ksyms
+redhat/dup/kmodtool
+These four files will be contained in the srpm and rpm.
+
+redhat/dup/create_disk.sh
+It can take *.rpm as paramenter and package them as an iso.
+
+8 brew build and test
+9 errata
+10 DUP testing
+
+[1] http://people.redhat.com/wpan/doc/rhel6/docs/dup_book.pdf
+
+Workflow example:
+
+1 background
+This task is to create a DUP iso to test the DUP infrastructure in RHEL7.1
+beta, so we should provision RHEL-7.1-20141203.0 Server x86_64, and the kernel
+is 3.10.0-210.el7.x86_64.
+
+Since the latest tag in kernel git repo is kernel-3.10.0-215.el7,
+then we will build bnx2x driver based on codes in kernel-3.10.0-215.el7, 
+and test it on 3.10.0-210.el7.x86_64.
+
+2 install releated packages
+yum -y install kernel-abi-whitelists redhat-rpm-config kernel-devel genisoimage createrepo
+
+3 clone DUP git repo and pull the latest codes from kernel git repo
+git clone git://git.engineering.redhat.com/users/wpan/rhel7-dup.git
+cd rhel7-dup/
+git pull git://git.app.eng.bos.redhat.com/rhel7
+
+4 since bnx2x needs firmware files, get them from brew,
+wget http://download.devel.redhat.com/brewroot/packages/linux-firmware/20140911/0.1.git365e80c.el7/noarch/linux-firmware-20140911-0.1.git365e80c.el7.noarch.rpm
+rpm2cpio linux-firmware-20140911-0.1.git365e80c.el7.noarch.rpm |cpio -div
+move bnx2x-e1-7.10.51.0.fw, bnx2x-e1h-7.10.51.0.fw and bnx2x-e2-7.10.51.0.fw to rhel7-dup/firmware/bnx2x
+
+5 modify Makefile.sources
+Append the following to redhat/dup/Makefile.sources,
+#bnx2x (bz#1124971)
+
+DUP_SOURCE_bnx2x= \
+drivers/net/ethernet/broadcom/bnx2x/* \
+drivers/net/ethernet/broadcom/cnic_if.h
+DUP_VERSION_bnx2x="1.710.51"
+DUP_FIRMWARE_bnx2x= \
+firmware/bnx2x/bnx2x-e1-7.10.51.0.fw \
+firmware/bnx2x/bnx2x-e1h-7.10.51.0.fw \
+firmware/bnx2x/bnx2x-e2-7.10.51.0.fw
+DUP_FIRMWARE_VERSION_bnx2x="7.10.51"
+
+6 test build to see if there is build error,
+if we meet error, we should cork a patch to fix it.
+
+make -f redhat/dup/Makefile DUP_DRIVER=bnx2x rpm
+
+7 generate greylist with following command,
+make -f redhat/dup/Makefile DUP_DRIVER=bnx2x update-greylist
+
+PS if we will provide symbol version files to other drivers,
+we should also generate symver files with following command,
+
+make -f redhat/dup/Makefile DUP_DRIVER=bnx2x update-symvers
+
+In most cases we can skip this step.
+
+8 contain the generated greylist and rebuild,
+make -f redhat/dup/Makefile DUP_DRIVER=bnx2x rpm
+
+9 generate DUP iso
+mkdir ~/bnx2x
+cp /root/rhel7-dup/redhat/dup/tmp/SRPMS/bnx2x-1.710.51-1.el7.src.rpm /root/rhel7-dup/redhat/dup/tmp/RPMS/x86_64/kmod-bnx2x-firmware-1.710.51-1.el7.x86_64.rpm /root/rhel7-dup/redhat/dup/tmp/RPMS/x86_64/kmod-bnx2x-1.710.51-1.el7.x86_64.rpm ~/bnx2x
+
+./redhat/dup/create_disk.sh ~/bnx2x/*.rpm
+It will generate dd.iso in the current directory 
+mv dd.iso ~/bnx2x/ and you can rename it and deliver it to QE.
+
