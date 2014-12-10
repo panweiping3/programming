@@ -1,3 +1,20 @@
+﻿DUP Internals
+
+Index
+1 What is DUP
+2 DUP schedule
+3 DUP request
+4 DUP workflow
+5 DUP git repo
+6 related tools/packages
+7 local build and test
+8 brew build and test
+9 errata
+10 DUP testing
+11 Workflow example (bnx2x):
+12 useful links
+
+
 1 What is DUP
 Driver Update Packages from Red Hat implement a mechanism whereby
 system drivers (and other loadable Linux kernel modules) may be added
@@ -7,7 +24,7 @@ of regular RPM packages that users may install easily onto their systems,
 without requiring build tools or specialist knowledge concerning the kernel.
 
 2 DUP schedule
-During planing time the customer will file a ystream bug to request a driver
+During planing phase the customer will file a ystream bug to request a driver
 update to enable new hardware or critical bug fix, and our ystream developer
 will fix the bug before beta. At the same time the customer can raise a DUP
 request based on this ystream bug, and we will start to build it after beta.
@@ -25,9 +42,9 @@ Basically a valid DUP request should meet following requirements:
 a) it enables new hardware
 b) it should be filed before beta
 c) the corresponding ystream bug must be fixed before beta
-d) it is better not involve middle layer module
+d) it is better not involve changes of middle layer module
 
-4 DUP workfolw
+4 DUP workflow
 a) evaluate customer's DUP request
 b) local build and test
 c) ask the customer and QE to test local build DUP iso
@@ -43,35 +60,42 @@ git://git.app.eng.bos.redhat.com/rhel5/kernel.git
 git://git.app.eng.bos.redhat.com/rhel6.git
 git://git.app.eng.bos.redhat.com/rhel7.git
 
+kernel firmware git repo
+git://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
+
 DUP repo
 git://git.engineering.redhat.com/users/wpan/rhel5-dup.git
 git://git.engineering.redhat.com/users/wpan/rhel6-dup.git
 git://git.engineering.redhat.com/users/wpan/rhel7-dup.git
 
 6 related tools/packages
-kmod, redhat-rpm-config, kernel-abi-whitelists redhat-rpm-config kernel-devel
+anaconda, kmod, redhat-rpm-config, kernel-abi-whitelists redhat-rpm-config kernel-devel
 genisoimage createrepo
 
 7 local build and test
-redhat/dup/
-redhat/dup/Makefile 
+git clone git://git.engineering.redhat.com/users/wpan/rhel7-dup.git
+cd rhel7-dup
+The whole work should be done in redhat/dup/,
+
+a) redhat/dup/Makefile 
 It is the main make to control the DUP build process,
 and it runs according to the paramenters that you specify on the command line.
 
-redhat/dup/Makefile.firmware
+b) redhat/dup/Makefile.firmware
 It is the makefile to build driver firmware sub-package,
 some driver will needs firmware to work.
 
-redhat/dup/Makefile.sources
+c) redhat/dup/Makefile.sources
 There are several keywords that you should specify,
 assume the driver name is DRIVERXXX,
 
 DUP_SOURCE_DRIVERXXX
 We should specify all the source codes here,
+
 DUP_VERSION_DRIVERXXX
 We should specify the version of driver here.
 If the driver does not have a version in its source codes,
-please refer to the doc.
+please refer to the doc [7].
 
 DUP_SYMVERS_DRIVERXXX
 This driver may depend on the symbol versions that provided by other drivers,
@@ -79,52 +103,75 @@ we should specify them here.
 
 DUP_FIRMWARE_DRIVERXXX
 This driver may need some firmware files, and we can specify them here.
-In RHEL7, firmware files can be found in brew, search "linux-firmware"
-package, then put them in your repo.
+In RHEL7, firmware files can be found in brew (or in the official git repo), 
+search "linux-firmware" package, then put them in your repo.
 
 DUP_FIRMWARE_VERSION_DRIVERXXX
 We can specify the version of the firmware package.
 
-
+d) three template files
 redhat/dup/template.files
 redhat/dup/template.spec
 redhat/dup/template.conf
-They are three template files, and other scripts will modify them and convert
-them.
+Other scripts (like Makefile) will modify them and convert them.
 
-redhat/dup/makefiles/
+e) redhat/dup/makefiles/
 If the driver needs a special makefile, put it here.
 
-redhat/dup/patches/
+f) redhat/dup/patches/
 If the driver needs a patch, put it here.
 
-redhat/dup/greylists/
+g) redhat/dup/greylists/
 We store the greylist files here.
 
-redhat/dup/symvers/
+h) redhat/dup/symvers/
 We store the symbol version files here.
+If we are a middle layer module, and if we will export symbols to be used by upper
+modules, then we should put the symbol version files here.
 
-redhat/dup/gengreylist.sh
+i) redhat/dup/gengreylist.sh
 It will be called to generate greylist if we specify "update-greylist" in the command line,
 make -f redhat/dup/Makefile DUP_DRIVER=bnx2x update-greylist
+And the output is saved in 
 redhat/dup/greylists/bnx2x/symbols.greylist-x86_64
 
+j) four files will be contained in rpm
 redhat/dup/depmodconf
 redhat/dup/find-requires.ksyms
 redhat/dup/find-provides.ksyms
 redhat/dup/kmodtool
-These four files will be contained in the srpm and rpm.
 
-redhat/dup/create_disk.sh
+k) redhat/dup/create_disk.sh
 It can take *.rpm as paramenter and package them as an iso.
+It needs command like mkisofs and createrepo.
 
 8 brew build and test
+a) check whether there is a git repo for that driver in dist-git,
+or file a ticket to releng to create the repo.
+b) check whether there is correct branch in that repo, or file a ticket to
+releng to create the branch.
+c) rhpkg switch-branch XXX
+d) rhpkg import YYY.srpm
+e) git commit and specify "Resolves: bz#"
+f) rhpkg push
+g) rhpkg build, then the rpms are in brew now
+
 9 errata
+a) file a DUP errata and use the old ones as template
+b) add "Builds". In this step you may ask releng for help.
+c) finish the "Rpmdiff" test
+d) modify the state as "QE" and transfer to QE
+f) QE will go on the errata test and release it
+
 10 DUP testing
+In most cases DUP will handle driver to enable new hardware,
+and we may not have such new hardware, then we will ask the customer to help
+me test it.
 
-[1] http://people.redhat.com/wpan/doc/rhel6/docs/dup_book.pdf
+And if we have old hardware that needs the same driver, QE will test it on the
+old hardware to see if the DUP iso works and wether there is regression.
 
-Workflow example:
+11 Workflow example:
 
 1 background
 This task is to create a DUP iso to test the DUP infrastructure in RHEL7.1
@@ -188,3 +235,11 @@ cp /root/rhel7-dup/redhat/dup/tmp/SRPMS/bnx2x-1.710.51-1.el7.src.rpm /root/rhel7
 It will generate dd.iso in the current directory 
 mv dd.iso ~/bnx2x/ and you can rename it and deliver it to QE.
 
+12 useful links:
+[1] https://home.corp.redhat.com/wiki/driver-update-program-dashboard
+[2] http://people.redhat.com/wpan/doc/rhel6/docs/dup_book.pdf
+[3] https://home.corp.redhat.com/node/67632
+[4] http://people.redhat.com/wpan/doc/
+[5] http://people.redhat.com/wpan/rhel6/
+[6] http://people.redhat.com/wpan/rhel7/
+[7] http://people.redhat.com/wpan/doc/rhel6/docs/DUP_naming_policy.pdf

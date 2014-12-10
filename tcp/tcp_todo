@@ -11,6 +11,7 @@ Linux 提供的一个特殊 setsockopt ,　在 accept 的 socket 上面，只有
 10 GSO GRO
 11 TCP Pre-Demux
 12 Go 
+13 sk_forward_alloc
 
 NOTE 1:
 
