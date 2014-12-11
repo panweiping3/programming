@@ -1,0 +1,176 @@
+oracleasm misc
+
+1 what it oracleasm
+2 when should we rebuild it
+3 how to build it
+4 testing
+5 useful links
+
+
+Oracle ASM (Automated Storage Management) is a data volume manager for
+Oracle databases. ASMLib is an optional utility that can be used on Linux
+systems to manage Oracle ASM devices. ASMLib consists of the following
+components:
+
+- kmod-oracleasm (open-source (GPL) kernel module package)
+
+racleasm (ASMlib kernel module) will ship separately from the kernel package.
+This is to make it clear that Red Hat provides only limited support.
+kmod-oracleasm package will be built depending on the GA kernel version of
+each minor release so that this package can be used by future zstream.
+
+Current, kernel qe team is co-working with "Afom Michael"
+<tmichael@redhat.com> on "oracleasm" feature testing.
+- Afom is the maintainer for oracleasm-support and oracleasmlib packages with
+the Oracle testing environment in RDU lab and will cover functional
+testing.
+Test case:  Afom,  please could you help to update functional test case
+link here?
+
+- kmod-oracleasm is belong to kernel-qe and will cover package sanity
+testing.
+Test case:
+https://tcms.engineering.redhat.com/plan/3614/rhel-dup-errata#testcases
+
+Based above information, this oracle feature is only tested when
+customer create a zstream request and RH devel build the oracle
+package with the indicated kernel version.
+
+For example, customer create RHEL66z kmod-oracleasm package
+request via BZ 1063526 when RHEL66 is in progress. This package
+will be built out when RHEL66 GA kernel is ready and deliver to QE
+and customer at the same time.  The RH QE (functional and package
+		level) and customer will start to test it together. Meanwhile, RH
+devel will create errata for this package. Kernel qe will handle
+errata process and release it after get the positive functional
+testing result from Afom and customer's testing feedback.
+Normally, this package will be released after GA release in 3
+weeks(including dist-git, build, functional/package testing,
+		errata, etc).
+
+
+* About RHEL66z oracleasm issue. (FYI, RHEL66 GA: Tue 2014-10-14)
+
+	There are some reason why it was delay this time.
+	1. Release channel issue:
+	Devel and QE got the confirmation on Nov 10 that the
+	PM/rel-eng has decided that creating a new channel is alot of
+	work for one or two packages, so they decided to allow 6.5.z
+	and 6.6.z oracleasm to be added
+	to the RHEL base zstream channel. So Devel fixed the errata
+	channel issue on Nov 13 and passed to QE. QE fixed the errata
+	tps/DistQA tps issue on Nov17 and released it.
+
+	2. The regression issue:
+	The regression issue(BZ1157408 was cloned per original
+			BZ1127073 #c13) was found by GSS on Oct 9 after original
+	package testing were finished. The issue is clear_inode
+	callback is missed in kmod-oracleasm.
+	Afom has reproduced it. RH Devel got the patch and fixed
+	it for RHEL66 GA kernel on Nov 06.
+
+
+	* What else we can do to enhance the whole process to
+	* avoid this kind of issue in the future.
+
+	1. Add the regression case into regular tesing.
+	Afom, guess you have added the reproducer to regular
+	testing scenario, right?
+
+	2. Push the related stakeholders to make the decision
+	as early as possible, like release channel, etc.
+
+	The kmod-oracleasm (ASMlib kernel module) will ship
+	separately from the kernel package. This is to make it
+	clear that Red Hat provides only limited support.
+	kmod-oracleasm package will be built depending on the
+	GA kernel version of each minor release so that this
+	package can be used by future zstream.
+
+	Current, kernel qe team is co-working with "Afom
+	Michael" <tmichael@redhat.com> on "oracleasm" feature
+	testing.
+	- Afom is the maintainer for oracleasm-support and
+	oracleasmlib packages with the Oracle testing
+	environment in RDU lab and will cover functional
+	testing.
+	Test case:  Afom,  please could you help to
+	update functional test case link here?
+
+	- kmod-oracleasm is belong to kernel-qe and will
+	cover package sanity testing.
+	Test case:
+	https://tcms.engineering.redhat.com/plan/3614/rhel-dup-errata#testcases
+
+	Based above information, this oracle
+	feature is only tested when customer create
+	a zstream request and RH devel build the
+	oracle package with the indicated kernel
+	version.
+
+	For example, customer create RHEL66z
+	kmod-oracleasm package request via BZ
+	1063526 when RHEL66 is in progress. This
+	package will be built out when RHEL66 GA
+	kernel is ready and deliver to QE and
+	customer at the same time.  The RH QE
+	(functional and package level) and customer
+	will start to test it together. Meanwhile,
+	RH devel will create errata for this
+	package. Kernel qe will handle errata
+	process and release it after get the
+	positive functional testing result from
+	Afom and customer's testing feedback.
+	Normally, this package will be released
+	after GA release in 3 weeks(including
+			dist-git, build, functional/package
+			testing, errata, etc).
+
+
+* About RHEL66z oracleasm issue. (FYI,
+		* RHEL66 GA: Tue 2014-10-14)
+
+There are some reason why it was delay this
+time.
+1. Release channel issue:
+Devel and QE got the confirmation on
+Nov 10 that the PM/rel-eng has decided
+that creating a new channel is alot of
+work for one or two packages, so they
+decided to allow 6.5.z and 6.6.z
+oracleasm to be added
+to the RHEL base zstream channel. So
+Devel fixed the errata channel issue on
+Nov 13 and passed to QE. QE fixed the
+errata tps/DistQA tps issue on Nov17
+and released it.
+
+2. The regression issue:
+The regression issue(BZ1157408 was
+		cloned per original BZ1127073 #c13)
+was found by GSS on Oct 9 after
+original package testing were
+finished. The issue is clear_inode
+callback is missed in
+kmod-oracleasm.
+Afom has reproduced it. RH Devel
+got the patch and fixed it for
+RHEL66 GA kernel on Nov 06.
+
+
+* What else we can do to enhance
+* the whole process to avoid this
+* kind of issue in the future.
+
+1. Add the regression case into
+regular tesing.
+Afom, guess you have added the
+reproducer to regular testing
+scenario, right?
+
+2. Push the related stakeholders
+to make the decision as early as
+possible, like release channel,
+	etc.
+
+
